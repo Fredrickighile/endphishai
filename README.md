@@ -9,6 +9,8 @@
 
 **98.5% Accurate** • **< 2 Second Response** • **4 Protection Layers**
 
+[🎥 Watch Demo](https://youtube.com) • [🚀 Try It Now](#-quick-start) • [💡 How It Works](#-how-it-works)
+
 ---
 
 ## 💔 Why I Built This
