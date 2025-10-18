@@ -1,13 +1,13 @@
 # 🛡️ EndPhishAI
 
-> AI-powered phishing detection built for African SMEs. Stop threats before they strike.
+> **AI-powered phishing detection that actually works.** Built by a victim, for victims.
 
 ![Landing Page](screenshots/secound.png)
 
 [![GitHub stars](https://img.shields.io/github/stars/Fredrickighile/endphishai?style=social)](https://github.com/Fredrickighile/endphishai)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**98.5% Accurate** • **< 2 Second Response** • **4 Protection Layers**
+**98.5% Accurate** • **< 2 Second Response** • **4 Protection Layers** • **5 African Languages**
 
 [🎥 Watch Demo](https://youtube.com) • [🚀 Try It Now](#-quick-start) • [💡 How It Works](#-how-it-works)
 
@@ -15,15 +15,22 @@
 
 ## 💔 Why I Built This
 
-I lost money to a phishing scam. I felt helpless, frustrated, and angry. **That pain became my purpose.**
+I lost money to a phishing scam. I felt **helpless**, **frustrated**, and **angry**. That pain became my purpose.
 
-I'm not just a developer building a hackathon project. I'm a victim turned fighter. I know the fear of clicking a fake link. I know the shame of falling for a scam.
+I'm not just a developer building a hackathon project. **I'm a victim turned fighter.** I know the fear of clicking a fake link. I know the shame of falling for a scam.
 
 **EndPhishAI exists because no one should suffer what I did.**
 
 ---
 
-## ✨ What Makes It Special
+## ✨ What It Does
+
+EndPhishAI detects what Google Safe Browsing, VirusTotal, and URLhaus miss:
+
+- 🔗 **Scan URLs** - Detect phishing links instantly
+- 📧 **Analyze Emails** - Check full email content for threats
+- 💬 **Check SMS** - Identify smishing attacks
+- 📄 **Scan Files** - Analyze PDF, DOCX, TXT, CSV, HTML
 
 ### 🎯 It's Not Just Another URL Checker
 
@@ -48,18 +55,9 @@ When you enable "Deep Scan", EndPhishAI actually **visits the webpage** and exam
 
 **This catches what Google Safe Browsing, VirusTotal, and URLhaus miss.**
 
-## ✨ What It Does
-
-EndPhishAI detects what Google Safe Browsing, VirusTotal, and URLhaus miss:
-
-- 🔗 **Scan URLs** - Detect phishing links instantly
-- 📧 **Analyze Emails** - Check full email content for threats
-- 💬 **Check SMS** - Identify smishing attacks
-- 📄 **Scan Files** - Analyze PDF, DOCX, TXT, CSV, HTML
-
 ---
 
-### 📱 4 Ways to Scan (One App, Unlimited Power)
+## 🎮 4 Ways to Scan (One App, Unlimited Power)
 
 ![Detection Interface](screenshots/firstDetect.png)
 
@@ -77,7 +75,7 @@ Upload PDF invoices, DOCX documents, HTML pages, CSV files, or TXT files. We ext
 
 ---
 
-### 🎯 Real-Time Results You Can Understand
+## 🎯 Real-Time Results You Can Understand
 
 ![Phishing Detection](screenshots/test_paypal.png)
 
@@ -91,27 +89,78 @@ Upload PDF invoices, DOCX documents, HTML pages, CSV files, or TXT files. We ext
 
 ---
 
-## 🎬 Screenshots
-
-### Multi-Format Scanner
-
-![Detection Interface](screenshots/firstDetect.png)
-
-### Real-Time Analysis
-
-![Phishing Detection](screenshots/test_paypal.png)
-
-### 4-Layer Protection
+## 🛡️ 4-Layer Protection System
 
 ![Protection Layers](screenshots/protectionLayerPaypal.png)
 
-### Interactive Learning
+We don't rely on just one method. We use **four layers** working together:
 
-![Learn Page](screenshots/LearnPage.png)
+```
+Layer 1: Heuristic Analysis
+   ↓ (Pattern matching, character tricks, domain analysis)
+Layer 2: Machine Learning Model (99.5% accurate!)
+   ↓ (30+ features analyzed in milliseconds)
+Layer 3: Google Safe Browsing API
+   ↓ (Check known threat databases)
+Layer 4: VirusTotal + PhishTank + URLhaus
+   ↓ (Cross-verify with multiple sources)
+
+🚨 FINAL VERDICT: Safe, Suspicious or Phishing?
+```
+
+**If even ONE layer catches something suspicious, we warn you.**
 
 ---
 
-## 🚀 Quick Start
+## 🎓 Learn While You Protect Yourself
+
+![Learn Page](screenshots/LearnPage.png)
+
+Most security tools just detect threats and stop there. **We teach you to recognize them yourself.**
+
+**Interactive Quiz - 10 Real-World Scenarios:**
+
+- 📧 "Your bank account will be closed in 24 hours!" - Phishing or Real?
+- 🔗 "www.paypa1.com" vs "www.paypal.com" - Can you spot the difference?
+- 💬 "You won $50,000! Click here!" - Red flag or legit?
+
+**Streak System** 🔥  
+Get answers right in a row and build your streak! It's addictive (in a good way).
+
+---
+
+## 🌍 Built for Africa (Because Context Matters)
+
+- 📲 **M-Pesa fake verification SMS** - "Thibitisha akaunti yako haraka!"
+- 🏦 **GTBank login clones** - Identical-looking fake banking pages
+- 📞 **MTN account suspension scams** - "Your line will be blocked!"
+- 💳 **Mobile money fraud** - Attacks targeting trust-based transactions
+
+**5 African Languages Supported:**
+
+- 🇬🇧 English
+- 🇫🇷 French
+- 🇰🇪 Swahili
+- 🇳🇬 Yoruba
+- 🇳🇬 Hausa
+
+---
+
+## 📊 Why It Actually Works
+
+| Feature               | Most Tools                | EndPhishAI                      |
+| --------------------- | ------------------------- | ------------------------------- |
+| **Detection Method**  | Only checks known threats | AI + Real-time content analysis |
+| **Formats Supported** | URLs only                 | URLs, Emails, SMS, Files        |
+| **Speed**             | 5-10 seconds              | < 2 seconds                     |
+| **Accuracy**          | 85-90%                    | **99.5%**                       |
+| **African Context**   | ❌ None                   | ✅ Trained on local threats     |
+| **Education**         | ❌ None                   | ✅ Interactive quiz + tips      |
+| **Explainability**    | ❌ "Threat detected"      | ✅ "Here's WHY it's dangerous"  |
+
+---
+
+## 🚀 Quick Start (Get Running in 3 Minutes)
 
 ### Prerequisites
 
@@ -132,7 +181,7 @@ cd endphishai
 ```bash
 cd phishai
 pip install -r requirements.txt
-python model_training.py  # First time only
+python model_training.py  # First time only (trains the AI model)
 python app.py  # Runs on http://127.0.0.1:8000
 ```
 
@@ -144,78 +193,19 @@ npm install
 npm run dev  # Runs on http://localhost:5173
 ```
 
-**4. Open browser**
+**4. Open your browser**
+
 Navigate to `http://localhost:5173` 🎉
 
----
+**5. Try it out!**
 
-## 🧠 How It Works
-
-```
-Suspicious URL → Heuristic Analysis → ML Model → Safe Browsing API → VirusTotal → Verdict
-```
-
-## 🛡️ 4-Layer Protection System
-
-![Protection Layers](screenshots/protectionLayerPaypal.png)
-
-We don't rely on just one method. We use **four layers** working together:
-
-```
-Layer 1: Heuristic Analysis
-   ↓ (Pattern matching, character tricks, domain analysis)
-Layer 2: Machine Learning Model (99.5% accurate!)
-   ↓ (30+ features analyzed in milliseconds)
-Layer 3: Google Safe Browsing API
-   ↓ (Check known threat databases)
-Layer 4: VirusTotal + URLhaus
-   ↓ (Cross-verify with multiple sources)
-
-🚨 FINAL VERDICT: Safe, Suspicious or Phishing?
-```
-
-**If even ONE layer catches something suspicious, we warn you.**
+- Paste this fake URL: `http://paypa1.com/verify` (notice the "1" instead of "l")
+- Watch EndPhishAI catch it in < 2 seconds
+- Enable "Deep Scan" to see full content analysis
 
 ---
 
-## 📊 Performance
-
-| Metric              | Result                 |
-| ------------------- | ---------------------- |
-| **Accuracy**        | 99.5%                  |
-| **Response Time**   | < 2 seconds            |
-| **False Positives** | < 1%                   |
-| **Languages**       | 5 (EN, FR, SW, YO, HA) |
-
----
-
-## 📊 Why It Actually Works
-
-| Feature               | Most Tools                | EndPhishAI                      |
-| --------------------- | ------------------------- | ------------------------------- |
-| **Detection Method**  | Only checks known threats | AI + Real-time content analysis |
-| **Formats Supported** | URLs only                 | URLs, Emails, SMS, Files        |
-| **Speed**             | 5-10 seconds              | < 2 seconds                     |
-| **Accuracy**          | 85-90%                    | **99.5%**                       |
-| **African Context**   | ❌ None                   | ✅ Trained on local threats     |
-| **Education**         | ❌ None                   | ✅ Interactive quiz + tips      |
-| **Explainability**    | ❌ "Threat detected"      | ✅ "Here's WHY it's dangerous"  |
-
----
-
-## 🏆 Built For AfrihackBox 2025
-
-### Why EndPhishAI Stands Out
-
-- ✅ **Real problem** - Built from personal experience
-- ✅ **African context** - Trained on M-Pesa, GTBank, MTN scams
-- ✅ **Multi-format** - URL, Email, SMS, Files
-- ✅ **Educational** - Interactive quiz + security tips
-- ✅ **Production-ready** - Real APIs, polished UI
-
----
-
-## 🛠️ Tech Stack (For the Nerds 🤓)
+## 🛠️ Tech Stack
 
 **Frontend**
 
@@ -253,12 +243,6 @@ Layer 4: VirusTotal + URLhaus
 - 🚨 URLhaus Threat Feed
 - 📲 Twilio SMS API
 
-**Training Data**
-
-- 📈 10,000+ phishing/safe URLs
-- 🌍 African-specific threats
-- 🗣️ Multilingual dataset
-
 ---
 
 ## 🎯 Performance That Actually Matters
@@ -280,7 +264,7 @@ Layer 4: VirusTotal + URLhaus
 
 ---
 
-## 🏆 Why You Will Love This
+## 🏆 Why Judges Will Love This
 
 ### 1. 🎯 Real Problem, Real Solution
 
@@ -315,43 +299,68 @@ Not a hypothetical use case. I was scammed. 47% increase in African banking scam
 
 ---
 
-## 📋 API Keys (Optional)
+## 📋 Optional: API Keys Setup
 
-Create `.env` files in `phishai/` and `backend/` folders:
+EndPhishAI works without API keys (using ML model only), but for **full power**, add these:
+
+**Create `phishai/.env`:**
 
 ```bash
-# phishai/.env
-GOOGLE_API_KEY=your_key
-VIRUSTOTAL_API_KEY=your_key
+GOOGLE_API_KEY=your_google_safe_browsing_key
+VIRUSTOTAL_API_KEY=your_virustotal_key
+```
 
-# backend/.env (for SMS alerts)
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
+**Create `backend/.env` (for SMS alerts):**
+
+```bash
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_token
 TWILIO_PHONE_NUMBER=+1234567890
 ```
+
+**Where to get keys (all have free tiers!):**
+
+- Google Safe Browsing: https://developers.google.com/safe-browsing
+- VirusTotal: https://www.virustotal.com/gui/join-us
+- Twilio: https://www.twilio.com/try-twilio
+
+---
+
+## 🎥 Demo Video
+
+> 🎬 **[Watch 5-Minute Demo on YouTube](https://youtube.com)**  
+> _(Link will be updated after recording)_
 
 ---
 
 ## 🤝 Contributing
 
-Contributions welcome! Fork → Branch → Commit → Push → PR
+Found a bug? Have an idea? Want to add more African languages?
+
+1. Fork this repo
+2. Create a branch (`git checkout -b feature/amazing-idea`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push (`git push origin feature/amazing-idea`)
+5. Open a Pull Request
 
 ---
 
 ## 📞 Contact
 
 - **GitHub:** [@Fredrickighile](https://github.com/Fredrickighile)
-- **Project:** [EndPhishAI](https://github.com/Fredrickighile/endphishai)
+- **Project Link:** [EndPhishAI](https://github.com/Fredrickighile/endphishai)
+- **Hackathon:** AfrihackBox 2025
 
 ---
 
-## 💝 Support
+## 💝 Support This Project
 
-If EndPhishAI helped you:
+If EndPhishAI helped you or someone you know:
 
-- ⭐ Star this repo
-- 🐛 Report bugs
-- 💬 Share your story
+- ⭐ **Star this repository**
+- 🐛 **Report bugs**
+- 💬 **Share your story**
+- 🤝 **Contribute** (code, datasets, translations welcome)
 
 ---
 
@@ -362,5 +371,11 @@ If EndPhishAI helped you:
 _Fighting phishing, one scan at a time._
 
 **From a victim, for victims. Let's end phishing together.** 🛡️
+
+---
+
+[![Star this repo](https://img.shields.io/github/stars/Fredrickighile/endphishai?style=social)](https://github.com/Fredrickighile/endphishai)
+
+[⬆ Back to Top](#️-endphishai)
 
 </div>
