@@ -31,14 +31,14 @@ export const ThreatBanner = ({ result }) => {
     <div
       className={`${color.bg} border-l-4 ${
         color.border
-      } rounded-xl sm:rounded-2xl p-5 sm:p-6 ${
+      } rounded-xl sm:rounded-2xl p-5 sm:p-6 shadow-xl ${
         threatLevel === "critical" || threatLevel === "high"
           ? "animate-pulse-border"
           : ""
       }`}
     >
       <div className="flex items-start gap-4">
-        <div className={`p-3 ${color.bg} rounded-xl`}>
+        <div className={`p-3 ${color.bg} rounded-xl shadow-lg`}>
           {threatLevel === "critical" ||
           threatLevel === "high" ||
           threatLevel === "medium" ? (
@@ -53,11 +53,11 @@ export const ThreatBanner = ({ result }) => {
               {getThreatTitle()}
             </h2>
           </div>
-          <p className={`${color.text} text-sm mb-3`}>
+          <p className={`${color.text} text-sm mb-3 font-semibold`}>
             Threat Level: {threatLevel.toUpperCase()} | Confidence:{" "}
             {getDisplayConfidence(result).toFixed(1)}%
           </p>
-          <p className="text-gray-300 leading-relaxed text-sm sm:text-base">
+          <p className="text-gray-200 leading-relaxed text-sm sm:text-base">
             {getUserFriendlyExplanation(result)}
           </p>
         </div>

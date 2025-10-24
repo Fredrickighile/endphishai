@@ -149,10 +149,10 @@ def create_expanded_dataset():
             all_samples.append((msg, 1))
             phishing_count += 1
     
-    print(f"   ✅ Generated {phishing_count} phishing samples\n")
+    print(f"    Generated {phishing_count} phishing samples\n")
     
     # ==== STEP 3: Generate SAFE examples ====
-    print("✅ [3/4] Generating safe examples...")
+    print(" [3/4] Generating safe examples...")
     
     # Legitimate domains
     safe_domains = [

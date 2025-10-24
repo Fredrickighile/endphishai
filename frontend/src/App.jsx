@@ -9,11 +9,13 @@ import Detect from "./Pages/Detect";
 import About from "./Pages/About";
 import Learn from "./Pages/Learn";
 import ScrollToTop from "./components/ScrollToTop";
+import OfflineDetector from "./components/OfflineDetector"; // ADD THIS
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <OfflineDetector /> {/* ADD THIS */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/detect" element={<Detect />} />

@@ -213,7 +213,7 @@ export default function Detect() {
   const getPlaceholder = () => {
     switch (scanMode) {
       case "url":
-        return "Paste suspicious URL here...\n\nExamples:\n• http://secure-bank-verify.tk/login\n• https://paypal-security.xyz/confirm";
+        return "Enter URL or domain to analyze for security threats...\n\nExamples:\nhttps://example.com/login\nhttp://suspicious-domain.tk";
       case "email":
         return "Paste the ENTIRE email content here (including sender, subject, and body)...\n\nExample:\nFrom: security@paypal-verify.com\nSubject: Urgent: Verify your account\nBody: Your PayPal account will be suspended...";
       case "message":
@@ -308,25 +308,25 @@ export default function Detect() {
         AI Security Tips
       </h3>
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+        <div className="flex items-start gap-3 bg-gray-900/80 backdrop-blur-sm p-4 rounded-xl border border-white/10">
           <Zap className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-gray-300">
             Always verify sender identity before clicking any links
           </p>
         </div>
-        <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+        <div className="flex items-start gap-3 bg-gray-900/80 backdrop-blur-sm p-4 rounded-xl border border-white/10">
           <Sparkles className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-gray-300">
             Check for spelling errors and suspicious URLs
           </p>
         </div>
-        <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+        <div className="flex items-start gap-3 bg-gray-900/80 backdrop-blur-sm p-4 rounded-xl border border-white/10">
           <Lock className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-gray-300">
             Look for HTTPS and valid security certificates
           </p>
         </div>
-        <div className="flex items-start gap-3 bg-white/5 backdrop-blur-sm p-4 rounded-xl border border-white/10">
+        <div className="flex items-start gap-3 bg-gray-900/80 backdrop-blur-sm p-4 rounded-xl border border-white/10">
           <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-gray-300">
             Never share passwords or OTPs via email or SMS
@@ -498,14 +498,14 @@ export default function Detect() {
         <div className="mb-6">
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl"></div>
-            <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-2">
+            <div className="relative bg-gray-800/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2">
               <div className="grid grid-cols-4 gap-2">
                 <button
                   onClick={() => handleTabSwitch("url")}
                   className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     scanMode === "url"
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                      : "bg-gray-800/90 text-gray-300 hover:bg-gray-700/90 hover:text-white"
                   }`}
                 >
                   <Link2 className="w-4 h-4" />
@@ -518,7 +518,7 @@ export default function Detect() {
                   className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     scanMode === "email"
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                      : "bg-gray-800/90 text-gray-300 hover:bg-gray-700/90 hover:text-white"
                   }`}
                 >
                   <Mail className="w-4 h-4" />
@@ -531,7 +531,7 @@ export default function Detect() {
                   className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     scanMode === "message"
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                      : "bg-gray-800/90 text-gray-300 hover:bg-gray-700/90 hover:text-white"
                   }`}
                 >
                   <MessageSquare className="w-4 h-4" />
@@ -544,7 +544,7 @@ export default function Detect() {
                   className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
                     scanMode === "file"
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white"
+                      : "bg-gray-800/90 text-gray-300 hover:bg-gray-700/90 hover:text-white"
                   }`}
                 >
                   <FileText className="w-4 h-4" />
@@ -602,7 +602,7 @@ export default function Detect() {
                 ) : (
                   <div className="space-y-4">
                     {/* File Preview */}
-                    <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                    <div className="bg-gray-900/90 border border-white/10 rounded-2xl p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <FileText className="w-8 h-8 text-blue-400" />
@@ -673,7 +673,7 @@ export default function Detect() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={getPlaceholder()}
-                className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all resize-none text-sm sm:text-base text-white placeholder-gray-500 ${
+                className={`w-full px-4 sm:px-5 py-3 sm:py-4 bg-gray-900 backdrop-blur-sm border border-white/20 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all resize-none text-sm sm:text-base text-white placeholder-gray-400 ${
                   scanMode === "url" ? "h-28 sm:h-32" : "h-48 sm:h-56"
                 }`}
                 disabled={loading}
@@ -782,28 +782,28 @@ export default function Detect() {
                   </h3>
 
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="bg-white/5 rounded-xl p-4">
+                    <div className="bg-gray-900/80 rounded-xl p-4">
                       <p className="text-gray-400 text-sm mb-1">File Name</p>
                       <p className="text-white font-medium">
                         {result.file_name}
                       </p>
                     </div>
 
-                    <div className="bg-white/5 rounded-xl p-4">
+                    <div className="bg-gray-900/80 rounded-xl p-4">
                       <p className="text-gray-400 text-sm mb-1">File Type</p>
                       <p className="text-white font-medium">
                         {result.file_type}
                       </p>
                     </div>
 
-                    <div className="bg-white/5 rounded-xl p-4">
+                    <div className="bg-gray-900/80 rounded-xl p-4">
                       <p className="text-gray-400 text-sm mb-1">URLs Found</p>
                       <p className="text-white font-medium">
                         {result.urls_count}
                       </p>
                     </div>
 
-                    <div className="bg-white/5 rounded-xl p-4">
+                    <div className="bg-gray-900/80 rounded-xl p-4">
                       <p className="text-gray-400 text-sm mb-1">Text Length</p>
                       <p className="text-white font-medium">
                         {result.extracted_text_length} characters
@@ -821,7 +821,7 @@ export default function Detect() {
                         {result.urls_found.map((url, index) => (
                           <div
                             key={index}
-                            className="bg-white/5 rounded-lg p-3"
+                            className="bg-gray-900/80 rounded-lg p-3"
                           >
                             <p className="text-blue-300 text-sm break-all">
                               {url}

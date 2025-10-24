@@ -20,7 +20,7 @@ export const BackendStatus = ({ backendStatus }) => {
         ) : (
           <>
             <WifiOff className="w-4 h-4" />
-            <span className="text-xs font-medium">Backend Offline</span>
+            <span className="text-xs font-medium"> Offline</span>
           </>
         )}
       </div>

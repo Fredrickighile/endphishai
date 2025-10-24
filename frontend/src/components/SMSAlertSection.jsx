@@ -1,23 +1,13 @@
 import { useState } from "react";
 import { Phone, Send, CheckCircle, AlertCircle } from "lucide-react";
 
-/**
- * SMS Alert Section Component
- * Allows users to receive SMS notifications about detected threats
- * Includes professional error handling and validation
- */
 export const SMSAlertSection = ({ result }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
-  /**
-   * Send SMS alert to user's phone number
-   * Handles all error cases professionally without exposing technical details
-   */
   const sendSMSAlert = async () => {
-    // Validate phone number before sending
     if (!phoneNumber.trim()) {
       setError("Please enter a phone number");
       return;
@@ -27,7 +17,6 @@ export const SMSAlertSection = ({ result }) => {
     setError("");
 
     try {
-      // Call Python backend SMS endpoint
       const response = await fetch("http://127.0.0.1:8000/send-sms", {
         method: "POST",
         headers: {
@@ -43,16 +32,12 @@ export const SMSAlertSection = ({ result }) => {
       const data = await response.json();
 
       if (response.ok) {
-        // SMS sent successfully
         setSent(true);
-
-        // Reset form after 3 seconds
         setTimeout(() => {
           setSent(false);
           setPhoneNumber("");
         }, 3000);
       } else {
-        // Handle error responses professionally
         if (data.error === "sms_unavailable") {
           setError(
             "SMS service temporarily unavailable. Please try again later or contact support."
@@ -70,14 +55,12 @@ export const SMSAlertSection = ({ result }) => {
         }
       }
     } catch (err) {
-      // Network or connection error
       setError("Service temporarily unavailable. Please try again later.");
     } finally {
       setSending(false);
     }
   };
 
-  // Only display SMS section for phishing or suspicious results
   const shouldShow =
     result &&
     (result.final_status === "phishing" ||
@@ -87,25 +70,22 @@ export const SMSAlertSection = ({ result }) => {
   if (!shouldShow) return null;
 
   return (
-    <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 mt-6">
-      {/* Section Header */}
+    <div className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 backdrop-blur-xl border-2 border-gray-700 rounded-2xl p-6 mt-6 shadow-xl">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-blue-500/20 rounded-lg">
-          <Phone className="w-5 h-5 text-blue-400" />
+        <div className="p-2 bg-blue-600/30 rounded-lg">
+          <Phone className="w-5 h-5 text-blue-300" />
         </div>
         <div>
           <h3 className="text-white font-bold">Send SMS Alert</h3>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-300">
             Get instant SMS notification about this threat
           </p>
         </div>
       </div>
 
-      {/* SMS Form */}
       <div className="space-y-3">
-        {/* Phone Number Input */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-gray-200 mb-2">
             Phone Number (with country code)
           </label>
           <input
@@ -113,33 +93,30 @@ export const SMSAlertSection = ({ result }) => {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
             placeholder="+234 XXX XXX XXXX"
-            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/20 rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent outline-none transition-all text-white placeholder-gray-500"
+            className="w-full px-4 py-3 bg-gray-900 backdrop-blur-sm border-2 border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-white placeholder-gray-400"
             disabled={sending || sent}
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-400 mt-1">
             Example: +234 for Nigeria, +254 for Kenya, +1 for US
           </p>
         </div>
 
-        {/* Error Message Display */}
         {error && (
-          <div className="flex items-center gap-2 p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+          <div className="flex items-center gap-2 p-3 bg-red-900/50 border-2 border-red-600 rounded-lg">
             <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-            <p className="text-sm text-red-300">{error}</p>
+            <p className="text-sm text-red-200">{error}</p>
           </div>
         )}
 
-        {/* Success Message Display */}
         {sent && (
-          <div className="flex items-center gap-2 p-3 bg-green-500/20 border border-green-500/30 rounded-lg animate-fade-in">
+          <div className="flex items-center gap-2 p-3 bg-green-900/50 border-2 border-green-600 rounded-lg animate-fade-in">
             <CheckCircle className="w-4 h-4 text-green-400 flex-shrink-0" />
-            <p className="text-sm text-green-300">
+            <p className="text-sm text-green-200">
               SMS alert sent successfully!
             </p>
           </div>
         )}
 
-        {/* Send Button */}
         <button
           onClick={sendSMSAlert}
           disabled={sending || sent || !phoneNumber.trim()}

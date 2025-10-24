@@ -1,0 +1,42 @@
+{
+  "name": "EndPhishAI - AI Phishing Detector",
+  "short_name": "EndPhishAI",
+  "description": "AI-powered phishing detection protecting African SMEs from cyber threats",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait-primary",
+  "categories": ["security", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "EndPhishAI Home Screen"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "EndPhishAI Detection Interface"
+    }
+  ]
+}
