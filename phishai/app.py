@@ -591,6 +591,11 @@ def predict():
             "protection_layers": 6
         }
         
+        # ===== FIX: ADD NLP ANALYSIS RESULTS =====
+        if 'nlp_analysis' in ai_result:
+            response['nlp_analysis'] = ai_result['nlp_analysis']
+        # =========================================
+        
         # Add content analysis details if performed
         if ai_result.get('content_analysis_performed'):
             response["content_indicators"] = ai_result.get('content_indicators', [])
@@ -708,6 +713,11 @@ def upload_file():
             "dangerous_file_blocked": False
         }
         
+        # ===== FIX: ADD NLP ANALYSIS FOR FILES TOO =====
+        if 'nlp_analysis' in ai_result:
+            response['nlp_analysis'] = ai_result['nlp_analysis']
+        # =================================================
+        
         print(f"File analysis complete: {ai_result['prediction']}")
         return jsonify(response), 200
     
@@ -758,7 +768,7 @@ def send_sms():
         
         if threat in ['phishing', 'malicious']:
             message = (
-                " PHISHING ALERT!\n\n"
+                "🚨 PHISHING ALERT!\n\n"
                 f"EndPhishAI detected a DANGEROUS link:\n{url}\n\n"
                 "DO NOT CLICK OR SHARE\n\n"
                 "Stay safe!\n"
@@ -831,7 +841,7 @@ def send_sms():
 if __name__ == "__main__":
     # Startup information
     print("\n" + "="*60)
-    print(" PhishAI Detection Service Starting...")
+    print("🚀 PhishAI Detection Service Starting...")
     print("="*60)
     print(f"Server: http://127.0.0.1:8000")
     print(f"ML Model: Loaded")
@@ -844,7 +854,8 @@ if __name__ == "__main__":
     print(f"URLhaus: Available")
     print(f"Supported Files: PDF, TXT, CSV, HTML, DOCX")
     print(f"Total Protection Layers: 7")
-    print(f" Safety Features: Rate Limiting, Caching, Blacklist, Whitelist")
+    print(f"🛡️ Safety Features: Rate Limiting, Caching, Blacklist, Whitelist")
     print("="*60 + "\n")
     
     app.run(host="127.0.0.1", port=8000, debug=True)
+

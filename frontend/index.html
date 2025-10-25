@@ -3,28 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- PWA Meta Tags -->
-    <meta name="description" content="AI-powered phishing detection for African SMEs" />
-    <meta name="theme-color" content="#3b82f6" />
-    
-    <!-- iOS PWA Support -->
-    <meta name="mobile-web-app-capable" content="yes">
 
+    <!-- Basic Meta -->
+    <meta
+      name="description"
+      content="EndPhishAI — AI-powered phishing detection and education for African users. Detect scams, analyze emails, and learn how to protect yourself in real time."
+    />
+    <meta name="keywords" content="phishing, AI, cybersecurity, Africa, PWA, scam detection" />
+    <meta name="author" content="Fredrick Ighile" />
+    <meta name="theme-color" content="#3b82f6" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="EndPhishAI" />
-    <link rel="apple-touch-icon" href="/icon-192.png" />
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/icon-192.png" />
-    
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+
     <!-- Manifest -->
     <link rel="manifest" href="/manifest.json" />
-    
+
+    <!-- Social Sharing -->
+    <meta property="og:title" content="EndPhishAI - Stop Phishing Before It Strikes" />
+    <meta
+      property="og:description"
+      content="Detect and stop phishing scams instantly with AI. Built for Africa, by Africans."
+    />
+    <meta property="og:image" content="/icon-512.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://your-deployed-site-url.com" />
+
     <title>EndPhishAI - Stop Phishing Before It Strikes</title>
   </head>
+
   <body>
+    <noscript>You need to enable JavaScript to run EndPhishAI.</noscript>
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

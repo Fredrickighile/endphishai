@@ -1,4 +1,4 @@
-// Detect.jsx - FIXED VERSION (No TypeScript errors)
+// Detect.jsx - CLEAN VERSION
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ThreatBanner } from "../components/threatbanner";
@@ -234,7 +234,7 @@ export default function Detect() {
       case "message":
         return "💬 Paste SMS, WhatsApp, or text message";
       case "file":
-        return "📁 Upload document for analysis";
+        return "📄 Upload document for analysis";
       default:
         return "Paste content to scan";
     }
@@ -466,7 +466,7 @@ export default function Detect() {
       <BackendStatus backendStatus={backendStatus} />
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 max-w-5xl relative z-10 pt-28 sm:pt-32 pb-16">
+      <div className="container mx-auto px-4 max-w-5xl relative z-10 pt-28 sm:pt-32 pb-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="inline-flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-xl border border-blue-400/30 text-blue-300 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium mb-6 shadow-lg shadow-blue-500/10">
@@ -561,7 +561,7 @@ export default function Detect() {
           </div>
         </div>
 
-        {/* Scan Input - ENHANCED */}
+        {/* Scan Input */}
         <div className="relative mb-6 sm:mb-8">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl sm:rounded-3xl blur-xl"></div>
           <div className="relative bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl">
@@ -573,7 +573,6 @@ export default function Detect() {
             </div>
 
             {scanMode === "file" ? (
-              /* FILE UPLOAD SECTION */
               <div className="space-y-4">
                 <input
                   type="file"
@@ -601,7 +600,6 @@ export default function Detect() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {/* File Preview */}
                     <div className="bg-gray-900/90 border border-white/10 rounded-2xl p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -628,7 +626,6 @@ export default function Detect() {
                       </div>
                     </div>
 
-                    {/* Supported Files Info */}
                     <div className="bg-blue-500/10 border border-blue-400/20 rounded-xl p-3">
                       <div className="flex items-center gap-2 mb-2">
                         <CheckCircle className="w-4 h-4 text-blue-400" />
@@ -667,7 +664,6 @@ export default function Detect() {
                 )}
               </div>
             ) : (
-              /* TEXT INPUT SECTION */
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -680,7 +676,6 @@ export default function Detect() {
               />
             )}
 
-            {/* CONTENT ANALYSIS TOGGLE */}
             {scanMode === "url" && <ContentAnalysisToggle />}
 
             {loading && (
@@ -750,7 +745,6 @@ export default function Detect() {
           </div>
         </div>
 
-        {/* Error Display */}
         {error && (
           <div className="relative mb-6 animate-fade-in">
             <div className="absolute inset-0 bg-red-500/20 rounded-2xl blur-xl"></div>
@@ -763,17 +757,21 @@ export default function Detect() {
           </div>
         )}
 
-        {/* Results Section - ENHANCED */}
+        {/* ✅ RESULTS SECTION - REAL FIX FOR EXTRA SPACE */}
         {result && (
-          <div className="space-y-6 animate-fade-in">
+          <>
             <ThreatBanner result={result} />
 
-            {/* Enhanced Content Display Component */}
-            <EnhancedContentDisplay result={result} />
+            {/* Only render wrapper if NLP or Content Analysis exists */}
+            {(result?.nlp_analysis?.performed ||
+              result?.content_analysis_performed) && (
+              <div className="mt-6">
+                <EnhancedContentDisplay result={result} />
+              </div>
+            )}
 
-            {/* File-specific results */}
             {result.input_type === "file" && (
-              <div className="relative">
+              <div className="relative mt-6">
                 <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-xl"></div>
                 <div className="relative bg-gradient-to-br from-blue-500/10 to-blue-600/5 backdrop-blur-xl border border-blue-400/20 rounded-2xl p-6">
                   <h3 className="text-white font-bold mb-4 flex items-center gap-2">
@@ -811,7 +809,6 @@ export default function Detect() {
                     </div>
                   </div>
 
-                  {/* URLs Found */}
                   {result.urls_found && result.urls_found.length > 0 && (
                     <div className="mt-4">
                       <p className="text-gray-400 text-sm mb-2">
@@ -832,7 +829,6 @@ export default function Detect() {
                     </div>
                   )}
 
-                  {/* Dangerous URLs */}
                   {result.dangerous_urls &&
                     result.dangerous_urls.length > 0 && (
                       <div className="mt-4 p-4 bg-red-500/10 border border-red-400/20 rounded-xl">
@@ -853,13 +849,20 @@ export default function Detect() {
               </div>
             )}
 
-            <ProtectionLayers result={result} />
-            <SMSAlertSection result={result} />
-            <ActionButtons result={result} />
-          </div>
+            <div className="mt-6">
+              <ProtectionLayers result={result} />
+            </div>
+
+            <div className="mt-6">
+              <SMSAlertSection result={result} />
+            </div>
+
+            <div className="mt-6">
+              <ActionButtons result={result} />
+            </div>
+          </>
         )}
 
-        {/* Security Tips */}
         <SecurityTips />
       </div>
     </div>
