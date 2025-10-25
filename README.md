@@ -175,9 +175,11 @@ Upload PDF invoices, DOCX documents, HTML pages, CSV files, or TXT files. We ext
 ## 🎯 Real-Time Results You Can Understand
 
 ![Phishing Detection](screenshots/test_paypal.png)
-**Natural language processing Results:
+##Natural language processing Results:
 ![Phishing Detection](screenshots/NPL.png)
-** Deep content analysis:
+
+## 🔍Deep content analysis:
+
 ![Phishing Detection](screenshots/deeep.png)
 
 **No confusing jargon.** We explain:
