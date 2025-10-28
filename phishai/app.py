@@ -15,6 +15,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 from urllib.parse import urlparse
+from pathlib import Path
 from phishing_detector import detect_phishing
 
 app = Flask(__name__)
@@ -54,6 +55,17 @@ elif TWILIO_IMPORTED:
     print("Twilio SMS: Not configured (add credentials to .env)")
 else:
     print("Twilio SMS: Not available (install with: pip install twilio)")
+
+# Try to import python-magic for file validation
+try:
+    import magic
+    MAGIC_AVAILABLE = True
+    print("✅ python-magic: Loaded (file security enabled)")
+except ImportError:
+    MAGIC_AVAILABLE = False
+    print("⚠️ python-magic: Not installed (MIME validation disabled)")
+    print("   Install with: pip install python-magic-bin (Windows)")
+    print("   or: pip install python-magic (Linux/Mac)")
 
 
 # ============================================================
@@ -382,66 +394,210 @@ def is_dangerous_file_type(filename):
     return file_ext in dangerous_extensions, file_ext
 
 
+# ============================================================
+# SECURE FILE EXTRACTION FUNCTIONS
+# ============================================================
+
 def extract_text_from_file(file, filename):
-    """Extract text content from various file formats"""
+    """
+    SECURE text extraction with multiple safety layers
+    Prevents: Code injection, path traversal, memory attacks
+    """
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB limit
+    MAX_TEXT_LENGTH = 500000  # 500KB text limit
+    
+    # ===== SECURITY LAYER 1: File Size Check =====
+    file.seek(0, 2)
+    file_size = file.tell()
+    file.seek(0)
+    
+    if file_size > MAX_FILE_SIZE:
+        return f"[ERROR: File too large - {file_size / (1024*1024):.1f}MB exceeds 10MB limit]"
+    
+    # ===== SECURITY LAYER 2: Extension Validation =====
     file_ext = filename.lower().split('.')[-1] if '.' in filename else ''
+    
+    ALLOWED_EXTENSIONS = {'pdf', 'txt', 'csv', 'html', 'htm', 'docx', 'md'}
+    DANGEROUS_EXTENSIONS = {
+        'exe', 'scr', 'bat', 'cmd', 'com', 'pif', 'application', 'msi',
+        'js', 'jse', 'vbs', 'vbe', 'ps1', 'sh', 'dll', 'sys', 'jar'
+    }
+    
+    if file_ext in DANGEROUS_EXTENSIONS:
+        return f"[🚫 BLOCKED: {file_ext.upper()} files are prohibited for security]"
+    
+    if file_ext not in ALLOWED_EXTENSIONS:
+        return f"[ERROR: Unsupported file type .{file_ext}]"
+    
+    # ===== SECURITY LAYER 3: MIME Type Validation (if available) =====
+    if MAGIC_AVAILABLE:
+        try:
+            mime = magic.from_buffer(file.read(2048), mime=True)
+            file.seek(0)
+            
+            ALLOWED_MIMES = {
+                'application/pdf',
+                'text/plain',
+                'text/csv',
+                'text/html',
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'text/markdown'
+            }
+            
+            if mime not in ALLOWED_MIMES:
+                return f"[🚫 BLOCKED: File type mismatch - claimed .{file_ext}, actually {mime}]"
+        
+        except Exception as e:
+            return f"[ERROR: File validation failed - {str(e)[:50]}]"
+    
+    # ===== SECURITY LAYER 4: Filename Sanitization =====
+    safe_filename = os.path.basename(filename)
+    if '..' in safe_filename or '/' in safe_filename or '\\' in safe_filename:
+        return "[🚫 BLOCKED: Invalid filename - path traversal attempt detected]"
+    
+    # ===== EXTRACTION BY FILE TYPE =====
     extracted_text = ""
     
     try:
         if file_ext == 'pdf':
-            try:
-                import PyPDF2
-                pdf_reader = PyPDF2.PdfReader(file)
-                for page in pdf_reader.pages:
-                    page_text = page.extract_text()
-                    if page_text:
-                        extracted_text += page_text + "\n"
-            except ImportError:
-                extracted_text = "[PDF content - install PyPDF2 for full extraction]"
-            except Exception as e:
-                extracted_text = f"[Error reading PDF: {str(e)}]"
-                
-        elif file_ext == 'docx':
-            try:
-                import docx
-                doc = docx.Document(file)
-                for para in doc.paragraphs:
-                    extracted_text += para.text + "\n"
-                for table in doc.tables:
-                    for row in table.rows:
-                        for cell in row.cells:
-                            extracted_text += cell.text + " "
-                    extracted_text += "\n"
-            except ImportError:
-                extracted_text = "[DOCX content - install python-docx for extraction]"
-            except Exception as e:
-                extracted_text = f"[Error reading DOCX: {str(e)}]"
-                
-        elif file_ext == 'txt':
-            extracted_text = file.read().decode('utf-8', errors='ignore')
-            
-        elif file_ext == 'csv':
-            csv_content = file.read().decode('utf-8', errors='ignore')
-            extracted_text = f"CSV Content:\n{csv_content}"
-            
-        elif file_ext == 'html':
-            html_content = file.read().decode('utf-8', errors='ignore')
-            # Strip HTML tags for text analysis
-            text_only = re.sub(r'<[^>]+>', '', html_content)
-            extracted_text = f"HTML Content:\n{text_only}"
-            
-        else:
-            try:
-                extracted_text = file.read().decode('utf-8', errors='ignore')
-            except:
-                extracted_text = f"[Binary file - {filename}]"
+            extracted_text = _extract_pdf_secure(file)
         
-        # Reset file pointer for potential re-reading
+        elif file_ext == 'docx':
+            extracted_text = _extract_docx_secure(file)
+        
+        elif file_ext in ['txt', 'csv', 'md']:
+            extracted_text = _extract_text_secure(file)
+        
+        elif file_ext in ['html', 'htm']:
+            extracted_text = _extract_html_secure(file)
+        
+        else:
+            return f"[ERROR: Handler not implemented for .{file_ext}]"
+        
+        # ===== SECURITY LAYER 5: Output Sanitization =====
+        if len(extracted_text) > MAX_TEXT_LENGTH:
+            extracted_text = extracted_text[:MAX_TEXT_LENGTH] + "\n[...truncated for security]"
+        
+        # Remove potential XSS/injection characters
+        extracted_text = _sanitize_output(extracted_text)
+        
         file.seek(0)
         return extracted_text.strip()
-        
+    
     except Exception as e:
-        return f"[Error extracting text: {str(e)}]"
+        return f"[ERROR: Extraction failed - {str(e)[:100]}]"
+
+
+def _extract_pdf_secure(file):
+    """Secure PDF extraction"""
+    try:
+        import PyPDF2
+        pdf_reader = PyPDF2.PdfReader(file)
+        
+        MAX_PAGES = 50
+        page_count = min(len(pdf_reader.pages), MAX_PAGES)
+        
+        text = ""
+        for i in range(page_count):
+            try:
+                page_text = pdf_reader.pages[i].extract_text()
+                if page_text:
+                    text += page_text + "\n"
+            except:
+                continue
+        
+        if not text.strip():
+            return "[PDF appears to be image-based or encrypted]"
+        
+        return text
+    
+    except ImportError:
+        return "[ERROR: PyPDF2 not installed - run: pip install PyPDF2]"
+    except Exception as e:
+        return f"[PDF error: {str(e)[:50]}]"
+
+
+def _extract_docx_secure(file):
+    """Secure DOCX extraction"""
+    try:
+        import docx
+        doc = docx.Document(file)
+        
+        text = ""
+        MAX_PARAGRAPHS = 500
+        
+        for i, para in enumerate(doc.paragraphs):
+            if i >= MAX_PARAGRAPHS:
+                text += "\n[...truncated...]"
+                break
+            text += para.text + "\n"
+        
+        for table in doc.tables[:10]:
+            for row in table.rows:
+                for cell in row.cells:
+                    text += cell.text + " "
+                text += "\n"
+        
+        if not text.strip():
+            return "[DOCX appears empty]"
+        
+        return text
+    
+    except ImportError:
+        return "[ERROR: python-docx not installed - run: pip install python-docx]"
+    except Exception as e:
+        return f"[DOCX error: {str(e)[:50]}]"
+
+
+def _extract_text_secure(file):
+    """Secure plain text extraction"""
+    try:
+        text = file.read().decode('utf-8', errors='ignore')
+        
+        if not text.strip():
+            return "[File appears empty]"
+        
+        return text
+    
+    except Exception as e:
+        return f"[Text error: {str(e)[:50]}]"
+
+
+def _extract_html_secure(file):
+    """Secure HTML extraction"""
+    try:
+        from bs4 import BeautifulSoup
+        
+        html_content = file.read().decode('utf-8', errors='ignore')
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        for script in soup(['script', 'style', 'meta', 'link']):
+            script.decompose()
+        
+        text = soup.get_text(separator=' ', strip=True)
+        
+        if not text.strip():
+            return "[HTML contains no text]"
+        
+        return f"HTML Content:\n{text}"
+    
+    except ImportError:
+        return "[ERROR: beautifulsoup4 not installed - run: pip install beautifulsoup4]"
+    except Exception as e:
+        return f"[HTML error: {str(e)[:50]}]"
+
+
+def _sanitize_output(text):
+    """Remove dangerous characters"""
+    if not text:
+        return ""
+    
+    text = text.replace('\x00', '')
+    text = re.sub(r'[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f-\x9f]', '', text)
+    text = re.sub(r'\n{4,}', '\n\n\n', text)
+    text = re.sub(r' {10,}', '  ', text)
+    
+    return text
 
 
 @app.route("/")
@@ -591,16 +747,61 @@ def predict():
             "protection_layers": 6
         }
         
-        # ===== FIX: ADD NLP ANALYSIS RESULTS =====
+        # =====  ADD NLP ANALYSIS RESULTS =====
         if 'nlp_analysis' in ai_result:
             response['nlp_analysis'] = ai_result['nlp_analysis']
         # =========================================
         
-        # Add content analysis details if performed
+        
+       # Add content analysis details if performed
         if ai_result.get('content_analysis_performed'):
             response["content_indicators"] = ai_result.get('content_indicators', [])
         elif ai_result.get('content_analysis_error'):
             response["content_analysis_error"] = ai_result.get('content_analysis_error')
+        
+        # ===== ADD THIS NEW CODE HERE =====
+        # Extract content analysis stats from ai_result
+       # ===== FIXED: Extract content analysis stats =====
+        if ai_result.get('content_analysis_performed'):
+            # PRIORITY 1: Check content_analysis_data (set by phishing_detector)
+            if 'content_analysis_data' in ai_result:
+                content_data = ai_result['content_analysis_data']
+                print(f"✅ Found content_analysis_data: {content_data}")
+            # PRIORITY 2: Check analysis field  
+            elif 'analysis' in ai_result and isinstance(ai_result['analysis'], dict):
+                analysis = ai_result['analysis']
+                content_data = {
+                    'html_elements': analysis.get('html_elements', 0),
+                    'scripts_count': analysis.get('scripts_count', 0),
+                    'forms_count': analysis.get('forms_count', 0),
+                    'external_links': analysis.get('external_links', 0)
+                }
+                print(f"✅ Extracted from analysis field: {content_data}")
+            else:
+                content_data = {
+                    'html_elements': 0,
+                    'scripts_count': 0,
+                    'forms_count': 0,
+                    'external_links': 0
+                }
+                print(f"⚠️ No content data found, using zeros")
+            
+            # Add to response
+            response["content_analysis"] = content_data
+            
+            # Add content_score
+            if 'phishing_score' in ai_result:
+                response["content_score"] = ai_result['phishing_score']
+            else:
+                response["content_score"] = ai_result.get('confidence', 0.0)
+            
+            # Add the indicators
+            response["content_indicators"] = ai_result.get('content_indicators', [])
+            
+            print(f"📤 Sending to frontend: content_analysis={content_data}, content_score={response['content_score']}")
+        elif ai_result.get('content_analysis_error'):
+            response["content_analysis_error"] = ai_result.get('content_analysis_error')
+        # ===== END FIXED SECTION =====
         
         response = convert_floats(response)
         return jsonify(response), 200

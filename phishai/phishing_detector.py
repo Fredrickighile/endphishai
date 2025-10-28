@@ -226,7 +226,6 @@ class ProductionPhishingDetector:
                 print(f"   NLP AI suggests legitimate content (score: {nlp_result['nlp_score']:.2%})")
         
         return self._combine_scores(heuristic_result, ml_score, input_text, nlp_result)
-    
     def _detect_with_safe_content_analysis(self, url, safe_analyzer):
         """
         Enhanced detection using safe webpage content scanning.
@@ -246,24 +245,44 @@ class ProductionPhishingDetector:
             content_result = safe_analyzer.analyze_safely(url)
             
             if content_result.get('success'):
-                print(f"Content scan successful")
+                print(f"✅ Content scan successful")
                 print(f"   Content Score: {content_result.get('phishing_score', 0):.2%}")
                 
                 indicators = content_result.get('indicators_found', [])
                 print(f"   Indicators Found: {len(indicators)}")
                 
+                # ===== CRITICAL FIX: Extract the actual stats =====
+                analysis_data = content_result.get('analysis', {})
+                
+                actual_content_data = {
+                    'html_elements': analysis_data.get('html_elements', 0),
+                    'scripts_count': analysis_data.get('scripts_count', 0),
+                    'forms_count': analysis_data.get('forms_count', 0),
+                    'external_links': analysis_data.get('external_links', 0)
+                }
+                
+                print(f"   📊 Extracted Stats:")
+                print(f"      - HTML Elements: {actual_content_data['html_elements']}")
+                print(f"      - Scripts: {actual_content_data['scripts_count']}")
+                print(f"      - Forms: {actual_content_data['forms_count']}")
+                print(f"      - External Links: {actual_content_data['external_links']}")
+                # ===== END CRITICAL FIX =====
+                
                 # Handle whitelisted domains
                 if content_result.get('whitelisted'):
-                    print("Domain is whitelisted - returning safe result")
+                    print("✅ Domain is whitelisted - returning safe result with stats")
                     return {
                         'prediction': 'safe',
                         'confidence': 0.0,
-                        'explanation': 'Whitelisted domain - analysis skipped for safety',
+                        'explanation': 'Whitelisted trusted domain',
                         'heuristic_score': 0.0,
                         'ml_score': None,
-                        'method': 'Whitelist Check',
+                        'method': 'Whitelist Check + Content Scan',
                         'content_analysis_performed': True,
-                        'content_indicators': indicators
+                        'content_indicators': indicators,
+                        'content_analysis_data': actual_content_data,
+                        'analysis': actual_content_data,
+                        'phishing_score': 0.0
                     }
                 
                 # Combine scores with dynamic weighting
@@ -281,18 +300,18 @@ class ProductionPhishingDetector:
                     final_score = (0.7 * standard_score) + (0.3 * content_score)
                     print(f"   Using standard-focused weighting (70% standard)")
                 
-                print(f"Final Combined Score: {final_score:.2%}")
+                print(f"📊 Final Combined Score: {final_score:.2%}")
                 
                 # Determine final prediction based on combined score
                 if final_score >= 0.70:
                     prediction = 'phishing'
-                    print(f"VERDICT: PHISHING")
+                    print(f"🚨 VERDICT: PHISHING")
                 elif final_score >= 0.50:
                     prediction = 'suspicious'
-                    print(f"VERDICT: SUSPICIOUS")
+                    print(f"⚠️ VERDICT: SUSPICIOUS")
                 else:
                     prediction = 'safe'
-                    print(f"VERDICT: SAFE")
+                    print(f"✅ VERDICT: SAFE")
                 
                 # Combine explanations from both analyses
                 content_summary = ', '.join(indicators[:2]) if indicators else 'No content indicators'
@@ -306,14 +325,17 @@ class ProductionPhishingDetector:
                     'explanation': combined_explanation,
                     'heuristic_score': standard_result.get('heuristic_score', 0.0),
                     'ml_score': standard_result.get('ml_score'),
-                    'method': 'Enhanced AI + Safe Content Analysis',
+                    'method': 'Enhanced AI + Deep Content Analysis',
                     'content_analysis_performed': True,
-                    'content_indicators': indicators
+                    'content_indicators': indicators,
+                    'content_analysis_data': actual_content_data,
+                    'analysis': actual_content_data,
+                    'phishing_score': content_score
                 }
             else:
                 # Content analysis failed - return standard result with error info
                 error_msg = content_result.get('error', 'Unknown error')
-                print(f"Content scan failed: {error_msg}")
+                print(f"❌ Content scan failed: {error_msg}")
                 print(f"{'='*70}\n")
                 standard_result['content_analysis_performed'] = False
                 standard_result['content_analysis_error'] = error_msg
@@ -321,7 +343,7 @@ class ProductionPhishingDetector:
                 
         except Exception as e:
             # Handle any unexpected errors during content analysis
-            print(f"Content analysis exception: {e}")
+            print(f"❌ Content analysis exception: {e}")
             print(f"{'='*70}\n")
             standard_result = self.detect_phishing(url, use_content_analysis=False)
             standard_result['content_analysis_performed'] = False

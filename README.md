@@ -182,7 +182,7 @@ Upload PDF invoices, DOCX documents, HTML pages, CSV files, or TXT files. We ext
 
 ## 🔍Deep content analysis:
 
-![Phishing Detection](screenshots/deeep.png)
+![Phishing Detection](screenshots/image.png)
 
 **No confusing jargon.** We explain:
 
