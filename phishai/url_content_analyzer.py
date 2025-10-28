@@ -36,6 +36,16 @@ class WorldClassContentAnalyzer:
             'mtn.com', 'airtel.africa', 'orange.com'
         }
         
+        
+                # Legitimate Nigerian domains (prevent false positives)
+        self.legitimate_ng_domains = {
+            'gosub.ng', 'jumia.com.ng', 'konga.com', 'paystack.com',
+            'flutterwave.com', 'gtbank.com', 'firstbanknigeria.com',
+            'zenithbank.com', 'nairaland.com', 'bellanaija.com',
+            'ncc.gov.ng', 'nitda.gov.ng', 'nigeriapolice.gov.ng'
+        }
+
+        
         # Trusted hosting platforms
         self.trusted_platforms = {
             'vercel.app', 'netlify.app', 'github.io', 'herokuapp.com',
@@ -233,9 +243,15 @@ class WorldClassContentAnalyzer:
             indicators.append(f'Extreme subdomain nesting ({subdomain_count})')
         
         # Feature 6: HTTPS Check
+        # Feature 6: HTTPS Check (relaxed for Nigerian trusted domains)
         if not url.startswith('https://'):
-            score += 0.25
-            indicators.append('No HTTPS encryption')
+            if not (
+                domain.endswith('.gov.ng')
+                or domain.endswith('.edu.ng')
+                or domain in self.legitimate_ng_domains
+            ):
+                score += 0.25
+                indicators.append('No HTTPS encryption')
         
         # Feature 7: URL Length Anomaly
         if len(url) > 100:

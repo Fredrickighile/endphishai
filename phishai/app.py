@@ -88,13 +88,18 @@ class SafeURLAnalyzer:
             'internal', 'intranet', 'admin', '10.0.0.'
         }
         
-        # Known safe domains (skip analysis)
+              # Known safe domains (skip analysis)
         self.whitelist = {
             'google.com', 'microsoft.com', 'apple.com', 'facebook.com',
             'amazon.com', 'netflix.com', 'twitter.com', 'linkedin.com',
             'instagram.com', 'youtube.com', 'github.com', 'stackoverflow.com',
-            'wikipedia.org', 'reddit.com'
+            'wikipedia.org', 'reddit.com',
+            # Nigerian / African trusted sites (avoid false positives)
+            'gosub.ng', 'jumia.com.ng', 'konga.com', 'paystack.com',
+            'flutterwave.com', 'gtbank.com', 'firstbanknigeria.com',
+            'zenithbank.com', 'nairaland.com', 'bellanaija.com'
         }
+
     
     def analyze_safely(self, url):
         """
@@ -126,8 +131,11 @@ class SafeURLAnalyzer:
                 'phishing_score': 0.0
             }
         
-        # Check whitelist
-        if any(trusted in domain for trusted in self.whitelist):
+              # Check whitelist (exact or subdomain match)
+        def _domain_matches_whitelist(domain, trusted):
+            return domain == trusted or domain.endswith('.' + trusted)
+
+        if any(_domain_matches_whitelist(domain, trusted) for trusted in self.whitelist):
             return {
                 'success': True,
                 'url': url,
@@ -137,6 +145,7 @@ class SafeURLAnalyzer:
                 'analysis': {'total_score': 0.0, 'indicators': []},
                 'whitelisted': True
             }
+
         
         # Check cache
         if url in self.cache:
@@ -160,8 +169,10 @@ class SafeURLAnalyzer:
         self.request_times.append(now)
         
         try:
-            from url_content_analyzer import URLContentAnalyzer
-            analyzer = URLContentAnalyzer()
+                       # NOTE: url_content_analyzer defines WorldClassContentAnalyzer
+            from url_content_analyzer import WorldClassContentAnalyzer
+            analyzer = WorldClassContentAnalyzer()
+
             result = analyzer.analyze_url_content(url)
             
             # Cache successful results

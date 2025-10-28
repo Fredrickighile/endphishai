@@ -37,7 +37,7 @@ class ProductionPhishingDetector:
         self.scaler = None
         self.ml_available = False
         self._load_model()
-        
+
         # Suspicious top-level domains commonly used in phishing
         self.suspicious_tlds = {
             '.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.click',
@@ -46,7 +46,7 @@ class ProductionPhishingDetector:
             '.stream', '.zip', '.men', '.cricket', '.accountant', '.faith',
             '.webcam', '.gdn', '.mom'
         }
-        
+
         # Trusted TLDs for government, education, and non-profit organizations
         self.trusted_tlds = {
             '.gov', '.gov.uk', '.gov.au', '.gov.ng', '.gov.za', '.gov.ke',
@@ -54,7 +54,7 @@ class ProductionPhishingDetector:
             '.edu', '.ac.uk', '.ac.za', '.ac.ke', '.edu.ng', '.edu.au',
             '.org', '.int'
         }
-        
+
         # Major brands frequently targeted by phishing attacks
         self.major_brands = {
             'google', 'facebook', 'microsoft', 'apple', 'amazon', 'netflix',
@@ -67,7 +67,14 @@ class ProductionPhishingDetector:
             'safaricom', 'mtn', 'airtel', 'vodacom', 'orange', 'etisalat',
             'jumia', 'konga', 'takealot', 'alibaba', 'ebay', 'shopify'
         }
-        
+
+        # Legitimate Nigerian domains (safe list)
+        self.legitimate_ng_domains = {
+            'gosub.ng', 'jumia.com.ng', 'konga.com', 'paystack.com',
+            'flutterwave.com', 'gtbank.com', 'firstbanknigeria.com',
+            'zenithbank.com', 'nairaland.com', 'bellanaija.com'
+        }
+
         # Regex patterns that indicate legitimate communications
         self.legitimate_patterns = [
             r'transaction.*(successful|completed|confirmed)',
@@ -82,11 +89,11 @@ class ProductionPhishingDetector:
             r'notifications@',
             r'@.*\.(gov|edu|ac\.)'
         ]
-        
+
         # Multilingual phishing keywords (English and major African languages)
         self.phishing_keywords = {
             'english': {
-                'verify account', 'urgent action', 'suspended account', 
+                'verify account', 'urgent action', 'suspended account',
                 'confirm identity', 'unusual activity', 'click here',
                 'claim prize', 'you won', 'expires soon', 'act now',
                 'restore access', 'locked account', 'security alert'
@@ -105,16 +112,16 @@ class ProductionPhishingDetector:
                 'cin nasara', 'matsala', 'gyara asusun', 'danna nan'
             }
         }
-        
+
         # Common phrases in casual, non-threatening conversations
         self.casual_patterns = {
-            'hi', 'hello', 'hey', 'how are you', 'good morning', 
+            'hi', 'hello', 'hey', 'how are you', 'good morning',
             'good afternoon', 'good evening', 'see you', 'talk soon',
             'catch you later', 'meeting at', 'coffee', 'lunch', 'dinner',
             'running late', 'on my way', 'just checking', 'let me know',
             'sounds good', 'okay', 'sure', 'thanks', 'thank you'
         }
-    
+
     def _load_model(self):
         """
         Load pre-trained machine learning models if available.
@@ -123,7 +130,7 @@ class ProductionPhishingDetector:
         model_path = self.model_dir / "phishing_model.pkl"
         vectorizer_path = self.model_dir / "vectorizer.pkl"
         scaler_path = self.model_dir / "scaler.pkl"
-        
+
         if model_path.exists() and vectorizer_path.exists() and scaler_path.exists():
             try:
                 self.model = joblib.load(model_path)
@@ -137,16 +144,16 @@ class ProductionPhishingDetector:
         else:
             print("ML Model: Not found - using heuristics only")
             self.ml_available = False
-    
+
     def detect_phishing(self, input_text, use_content_analysis=False, safe_analyzer=None):
         """
         Main detection method that coordinates all analysis layers.
-        
+
         Args:
             input_text: The URL, email, or message to analyze
             use_content_analysis: Whether to perform deep webpage content analysis
             safe_analyzer: Optional safe analyzer object for content scanning
-            
+
         Returns:
             Dictionary containing prediction, confidence score, and explanations
         """
@@ -160,36 +167,36 @@ class ProductionPhishingDetector:
         print(f"Is URL: {self._is_url(input_text)}")
         print(f"NLP AI Available: {NLP_AI_AVAILABLE}")
         print(f"{'='*70}\n")
-        
+
         # Clean and validate input
         input_text = self._sanitize_input(input_text)
-        
+
         if not input_text:
             print("Empty input detected")
             return self._safe_result("Empty input", confidence=0.0)
-        
+
         # Quick filter: detect casual conversations (very low risk)
         if self._is_casual_conversation(input_text):
             print("Detected as casual conversation")
             return self._safe_result("Normal conversation", confidence=0.05)
-        
+
         # Auto-fix common URL format issues
         if self._looks_like_domain(input_text) and not input_text.startswith('http'):
             print(f"Auto-fixed URL format: {input_text}")
             input_text = 'http://' + input_text
-        
+
         # Fast-track: trusted domains (government, education)
         if self._is_url(input_text):
             if self._is_trusted_tld(input_text):
                 print("Trusted TLD detected (.gov/.edu)")
                 return self._safe_result("Verified government/education domain", confidence=0.0)
-        
+
         # Check for legitimate transaction patterns
         is_legitimate, legit_score, legit_reasons = self._check_legitimate_context(input_text)
         if is_legitimate:
             print(f"Legitimate transaction detected: {legit_reasons}")
             return self._safe_result("; ".join(legit_reasons), confidence=legit_score)
-        
+
         # Optional: Deep content analysis for URLs
         if use_content_analysis and safe_analyzer and self._is_url(input_text):
             print(f"\n{'='*70}")
@@ -203,18 +210,18 @@ class ProductionPhishingDetector:
                     print("   - Safe analyzer not provided")
                 if not self._is_url(input_text):
                     print("   - Input is not a URL")
-        
+
         # Standard detection: Heuristics + ML + NLP AI
         print("Running standard detection (Heuristics + ML + NLP AI)...")
         heuristic_result = self._analyze_heuristics(input_text)
         ml_score = self._analyze_ml(input_text) if self.ml_available else None
-        
+
         # NLP AI Analysis for text-based threats (emails, SMS, messages)
         nlp_result = None
         if NLP_AI_AVAILABLE and not self._is_url(input_text):
             print("Running NLP AI Analysis...")
             nlp_result = analyze_text_with_nlp_ai(input_text)
-            
+
             # Boost detection score if NLP AI finds phishing patterns
             if nlp_result['nlp_score'] > 0.5:
                 boost = nlp_result['nlp_score'] * 0.3
@@ -224,8 +231,9 @@ class ProductionPhishingDetector:
                 print(f"   NLP AI detected phishing patterns (score: {nlp_result['nlp_score']:.2%})")
             else:
                 print(f"   NLP AI suggests legitimate content (score: {nlp_result['nlp_score']:.2%})")
-        
+
         return self._combine_scores(heuristic_result, ml_score, input_text, nlp_result)
+
     def _detect_with_safe_content_analysis(self, url, safe_analyzer):
         """
         Enhanced detection using safe webpage content scanning.
@@ -233,41 +241,41 @@ class ProductionPhishingDetector:
         """
         print(f"Starting safe webpage content analysis...")
         print(f"Target URL: {url}")
-        
+
         try:
             # Step 1: Run standard URL-based detection
             print("Step 1: Running standard detection...")
             standard_result = self.detect_phishing(url, use_content_analysis=False)
             print(f"   Standard Score: {standard_result['confidence']:.2%}")
-            
+
             # Step 2: Scan actual webpage content
             print("Step 2: Scanning webpage content (safely)...")
             content_result = safe_analyzer.analyze_safely(url)
-            
+
             if content_result.get('success'):
                 print(f"✅ Content scan successful")
                 print(f"   Content Score: {content_result.get('phishing_score', 0):.2%}")
-                
+
                 indicators = content_result.get('indicators_found', [])
                 print(f"   Indicators Found: {len(indicators)}")
-                
+
                 # ===== CRITICAL FIX: Extract the actual stats =====
                 analysis_data = content_result.get('analysis', {})
-                
+
                 actual_content_data = {
                     'html_elements': analysis_data.get('html_elements', 0),
                     'scripts_count': analysis_data.get('scripts_count', 0),
                     'forms_count': analysis_data.get('forms_count', 0),
                     'external_links': analysis_data.get('external_links', 0)
                 }
-                
+
                 print(f"   📊 Extracted Stats:")
                 print(f"      - HTML Elements: {actual_content_data['html_elements']}")
                 print(f"      - Scripts: {actual_content_data['scripts_count']}")
                 print(f"      - Forms: {actual_content_data['forms_count']}")
                 print(f"      - External Links: {actual_content_data['external_links']}")
                 # ===== END CRITICAL FIX =====
-                
+
                 # Handle whitelisted domains
                 if content_result.get('whitelisted'):
                     print("✅ Domain is whitelisted - returning safe result with stats")
@@ -284,11 +292,11 @@ class ProductionPhishingDetector:
                         'analysis': actual_content_data,
                         'phishing_score': 0.0
                     }
-                
+
                 # Combine scores with dynamic weighting
                 standard_score = standard_result['confidence']
                 content_score = content_result.get('phishing_score', 0)
-                
+
                 # Weight content analysis higher when it's very confident
                 if content_score >= 0.70:
                     final_score = (0.3 * standard_score) + (0.7 * content_score)
@@ -299,9 +307,9 @@ class ProductionPhishingDetector:
                 else:
                     final_score = (0.7 * standard_score) + (0.3 * content_score)
                     print(f"   Using standard-focused weighting (70% standard)")
-                
+
                 print(f"📊 Final Combined Score: {final_score:.2%}")
-                
+
                 # Determine final prediction based on combined score
                 if final_score >= 0.70:
                     prediction = 'phishing'
@@ -312,13 +320,13 @@ class ProductionPhishingDetector:
                 else:
                     prediction = 'safe'
                     print(f"✅ VERDICT: SAFE")
-                
+
                 # Combine explanations from both analyses
                 content_summary = ', '.join(indicators[:2]) if indicators else 'No content indicators'
                 combined_explanation = f"{standard_result['explanation']}; Content Analysis: {content_summary}"
-                
+
                 print(f"{'='*70}\n")
-                
+
                 return {
                     'prediction': prediction,
                     'confidence': round(final_score, 3),
@@ -340,7 +348,7 @@ class ProductionPhishingDetector:
                 standard_result['content_analysis_performed'] = False
                 standard_result['content_analysis_error'] = error_msg
                 return standard_result
-                
+
         except Exception as e:
             # Handle any unexpected errors during content analysis
             print(f"❌ Content analysis exception: {e}")
@@ -349,7 +357,7 @@ class ProductionPhishingDetector:
             standard_result['content_analysis_performed'] = False
             standard_result['content_analysis_error'] = str(e)
             return standard_result
-    
+
     def _is_trusted_tld(self, url):
         """
         Check if URL uses a trusted top-level domain.
@@ -358,37 +366,49 @@ class ProductionPhishingDetector:
         try:
             parsed = urlparse(url.lower())
             domain = parsed.netloc
-            
+
             for tld in self.trusted_tlds:
                 if domain.endswith(tld):
                     return True
             return False
         except:
             return False
-    
+
+    def _is_legitimate_nigerian_domain(self, domain):
+        """Check if a domain is a verified Nigerian site"""
+        try:
+            domain_lower = domain.lower()
+            # exact or subdomain match for each legit domain entry
+            return any(
+                domain_lower == legit or domain_lower.endswith(f".{legit}")
+                for legit in self.legitimate_ng_domains
+            )
+        except:
+            return False
+
     def _is_casual_conversation(self, text):
         """
         Detect normal casual messages that are clearly not phishing attempts.
         Uses pattern matching to identify friendly, informal communication.
         """
         text_lower = text.lower()
-        
+
         # Short messages with multiple casual phrases are likely safe
         if len(text) < 200:
             casual_count = sum(1 for pattern in self.casual_patterns if pattern in text_lower)
             if casual_count >= 2:
                 return True
-        
+
         # Check for combination of safe indicators
         has_no_url = 'http' not in text_lower and 'www.' not in text_lower
         has_casual = any(pattern in text_lower for pattern in self.casual_patterns)
         has_no_urgency = not any(word in text_lower for word in ['urgent', 'immediate', 'verify', 'suspended'])
-        
+
         if has_no_url and has_casual and has_no_urgency:
             return True
-        
+
         return False
-    
+
     def _check_legitimate_context(self, text):
         """
         Check if message contains indicators of legitimate business communication.
@@ -397,7 +417,7 @@ class ProductionPhishingDetector:
         text_lower = text.lower()
         legitimacy_score = 0.0
         reasons = []
-        
+
         # Check against legitimate pattern library
         for pattern in self.legitimate_patterns:
             if re.search(pattern, text_lower):
@@ -405,41 +425,47 @@ class ProductionPhishingDetector:
                 reasons.append("Legitimate pattern detected")
                 if legitimacy_score >= 0.50:
                     break
-        
+
         # Look for transaction-specific elements
         has_ref = bool(re.search(r'(reference|receipt|transaction|order).*[A-Z0-9]{6,}', text_lower))
         has_amount = bool(re.search(r'(amount|total|paid).*[$€£¥₦₹]\s*[\d,]+', text_lower))
-        
+
         if has_ref and has_amount:
             legitimacy_score += 0.40
             reasons.append("Valid transaction structure")
-        
+
         is_legitimate = legitimacy_score >= 0.50
         return is_legitimate, legitimacy_score, reasons
-    
+
     def _fuzzy_brand_match(self, domain):
         """
-        Detect typosquatting attempts using fuzzy string matching.
-        Identifies domains that are very similar to legitimate brands.
+        Detect typosquatting or impersonation attempts with safer matching.
+        Avoids substring false positives (e.g., gosub.ng -> uba).
         """
-        domain_clean = re.sub(r'[^a-z0-9]', '', domain.lower())
-        
+        domain_clean = re.sub(r'[^a-z0-9.-]', '', domain.lower())
+
         for brand in self.major_brands:
-            if brand in domain_clean:
-                # Exact match to legitimate domain
-                if domain.endswith(f"{brand}.com") or domain == f"{brand}.com":
+            # Safer detection: brand as subdomain/prefix/suffix or hyphenated token
+            if (
+                domain_clean.startswith(f"{brand}.") or
+                f"-{brand}" in domain_clean or
+                f"{brand}-" in domain_clean or
+                domain_clean.endswith(f".{brand}.com") or
+                domain_clean.endswith(f".{brand}.ng")
+            ):
+                # Exact legitimate domain check
+                if domain_clean.endswith(f"{brand}.com") or domain_clean == f"{brand}.com":
                     return False, brand, 1.0
                 else:
-                    # Brand name in domain but not exact match - suspicious
                     return True, brand, 0.9
-            
-            # Check for high similarity (potential typosquatting)
+
+            # Fuzzy similarity for typosquatting
             similarity = SequenceMatcher(None, brand, domain_clean).ratio()
-            if similarity > 0.85 and similarity < 1.0:
+            if 0.85 < similarity < 1.0:
                 return True, brand, similarity
-        
+
         return False, None, 0.0
-    
+
     def _analyze_heuristics(self, text):
         """
         Advanced heuristic analysis using pattern recognition.
@@ -449,86 +475,90 @@ class ProductionPhishingDetector:
         reasons = []
         text_lower = text.lower()
         is_url = self._is_url(text)
-        
+
         if is_url:
             parsed = urlparse(text)
             domain = parsed.netloc.lower()
-            
+
+            # ✅ Skip known safe Nigerian domains early
+            if self._is_legitimate_nigerian_domain(domain):
+                return {'score': 0.0, 'reasons': ['Verified Nigerian domain']}
+
             # IP addresses instead of domains are highly suspicious
             if self._is_ip_address(domain):
                 score += 0.70
                 reasons.append("Uses IP address (common in phishing)")
-            
+
             # Check for suspicious top-level domains
             for tld in self.suspicious_tlds:
                 if domain.endswith(tld):
                     score += 0.55
                     reasons.append(f"Suspicious domain extension ({tld})")
                     break
-            
+
             # Check for brand impersonation attempts
             is_typosquat, brand, similarity = self._fuzzy_brand_match(domain)
             if is_typosquat:
                 score += 0.65
                 reasons.append(f"Potential {brand.upper()} impersonation")
-            
+
             # Excessive subdomains are suspicious
             subdomain_count = domain.count('.') - 1
             if subdomain_count > 3:
                 score += 0.40
                 reasons.append(f"Suspicious subdomain structure")
-            
+
             # Non-standard ports can indicate proxy/redirect
             if re.search(r':\d+', domain):
                 score += 0.35
                 reasons.append("Non-standard port number")
-            
-            # Lack of HTTPS is a red flag
-            if not text.startswith('https://'):
+
+            # Lack of HTTPS is a red flag but relax for trusted gov/edu Nigerian domains
+            if not text.startswith('https://') and not domain.endswith('.gov.ng') and not domain.endswith('.edu.ng'):
                 score += 0.25
                 reasons.append("No secure connection (HTTP)")
-            
+
             # @ symbol in URL is a redirect trick
             if '@' in text:
                 score += 0.60
                 reasons.append("URL redirection trick detected")
-        
+
         # Analyze phishing keywords across multiple languages
         phishing_keyword_count = 0
         for language, keywords in self.phishing_keywords.items():
             for keyword in keywords:
                 if keyword in text_lower:
                     phishing_keyword_count += 1
-        
+
         if phishing_keyword_count >= 3:
             score += 0.50
             reasons.append(f"Multiple phishing keywords")
         elif phishing_keyword_count >= 2:
             score += 0.30
             reasons.append(f"Phishing keywords detected")
-        
+
         # Check for urgency tactics combined with action requests
         urgency_words = ['urgent', 'immediate', 'expires', 'act now', 'limited time']
         has_urgency = sum(1 for word in urgency_words if word in text_lower) >= 2
         has_link = 'http' in text_lower or 'click here' in text_lower
-        
+
         if has_urgency and has_link:
             score += 0.45
             reasons.append("Urgency tactics + suspicious link")
-        
+
         # Prize/lottery scam indicators
         if re.search(r'(win|won|prize|lottery|free money|\$\d{4,}|₦\d{6,})', text_lower):
             score += 0.40
             reasons.append("Prize/money scam indicators")
-        
+
         # Normalize score to 0-1 range
         score = max(0.0, min(1.0, score))
-        
+
         if not reasons:
             reasons = ['No suspicious patterns detected']
-        
+
         return {'score': score, 'reasons': reasons}
-    
+
     def _analyze_ml(self, text):
         """
         Machine learning prediction using trained Random Forest model.
@@ -536,29 +566,29 @@ class ProductionPhishingDetector:
         """
         try:
             from advanced_features import extract_features
-            
+
             # Extract 30+ numerical features
             features_dict = extract_features(text)
             features_df = pd.DataFrame([features_dict])
             features_scaled = self.scaler.transform(features_df)
-            
+
             # Vectorize text using TF-IDF
             text_vec = self.vectorizer.transform([text])
-            
+
             # Combine features and predict
             combined = hstack([text_vec, features_scaled])
             proba = self.model.predict_proba(combined)[0]
             return float(proba[1]) if len(proba) > 1 else float(proba[0])
         except:
             return None
-    
+
     def _combine_scores(self, heuristic_result, ml_score, text, nlp_result=None):
         """
         Combine scores from multiple detection layers into final prediction.
         Uses weighted averaging with strict thresholds.
         """
         h_score = heuristic_result['score']
-        
+
         # Determine method and calculate weighted final score
         if ml_score is not None:
             final_score = (0.7 * ml_score) + (0.3 * h_score)
@@ -572,7 +602,7 @@ class ProductionPhishingDetector:
             method = "Enhanced Heuristics"
             if nlp_result:
                 method += " + NLP AI"
-        
+
         # Apply strict thresholds for classification
         if final_score >= 0.65:
             prediction = "phishing"
@@ -580,9 +610,9 @@ class ProductionPhishingDetector:
             prediction = "suspicious"
         else:
             prediction = "safe"
-        
+
         explanation = "; ".join(heuristic_result['reasons'][:3])
-        
+
         response = {
             'prediction': prediction,
             'confidence': round(float(final_score), 3),
@@ -592,19 +622,19 @@ class ProductionPhishingDetector:
             'method': method,
             'content_analysis_performed': False
         }
-        
+
         # Add NLP AI results if analysis was performed
         if nlp_result:
             response['nlp_analysis'] = {
                 'performed': True,
                 'score': nlp_result['nlp_score'],
-                'method': nlp_result['ai_method'],
-                'confidence': nlp_result['confidence'],
-                'indicators': nlp_result['indicators']
+                'method': nlp_result.get('ai_method', 'NLP-AI'),
+                'confidence': nlp_result.get('confidence', None),
+                'indicators': nlp_result.get('indicators', [])
             }
-        
+
         return response
-    
+
     def _safe_result(self, reason, confidence=0.05):
         """Create a standardized safe result response"""
         return {
@@ -616,7 +646,7 @@ class ProductionPhishingDetector:
             'method': 'Whitelist/Context Analysis',
             'content_analysis_performed': False
         }
-    
+
     def _sanitize_input(self, text):
         """Remove potentially harmful characters and normalize input"""
         if not text or not isinstance(text, str):
@@ -625,18 +655,18 @@ class ProductionPhishingDetector:
         text = re.sub(r'[\x00-\x1f\x7f-\x9f]', '', text)
         # Normalize whitespace and limit length
         return ' '.join(text.split()).strip()[:2000]
-    
+
     def _looks_like_domain(self, text):
         """Check if text appears to be a domain name"""
         text = text.strip().lower()
         if ' ' in text or len(text) > 200:
             return False
         return bool(re.match(r'^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+', text))
-    
+
     def _is_url(self, text):
         """Check if text is a valid URL"""
         return bool(re.match(r'^https?://', text.lower()))
-    
+
     def _is_ip_address(self, domain):
         """Check if domain is an IP address"""
         return bool(re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', domain))
