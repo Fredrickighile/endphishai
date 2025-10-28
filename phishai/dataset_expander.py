@@ -34,12 +34,12 @@ def create_expanded_dataset():
             reader = csv.DictReader(f)
             for row in reader:
                 all_samples.append((row['text'], int(row['label'])))
-        print(f"   ✅ Loaded {len(all_samples)} existing samples\n")
+        print(f"    Loaded {len(all_samples)} existing samples\n")
     else:
-        print("   ⚠️ No existing data found, starting fresh\n")
+        print("    No existing data found, starting fresh\n")
     
     # ==== STEP 2: Generate PHISHING examples (multilingual) ====
-    print("🚨 [2/4] Generating phishing examples...")
+    print(" [2/4] Generating phishing examples...")
     
     # Suspicious domains/TLDs
     phishing_tlds = ['.xyz', '.top', '.tk', '.ml', '.ga', '.click', '.link', '.work']
@@ -230,7 +230,7 @@ def create_expanded_dataset():
             all_samples.append((msg, 0))
             safe_count += 1
     
-    print(f"   ✅ Generated {safe_count} safe samples\n")
+    print(f"   Generated {safe_count} safe samples\n")
     
     # ==== STEP 4: Save merged dataset ====
     print("💾 [4/4] Saving expanded dataset...")
@@ -258,15 +258,15 @@ def create_expanded_dataset():
         writer.writerow(['text', 'label'])
         writer.writerows(unique_samples)
     
-    print(f"   ✅ Saved to: {output_file}")
-    print(f"\n📊 FINAL DATASET STATISTICS:")
+    print(f"    Saved to: {output_file}")
+    print(f"\n FINAL DATASET STATISTICS:")
     print(f"   Total samples: {len(unique_samples):,}")
     print(f"   Phishing: {phishing_final:,} ({phishing_final/len(unique_samples)*100:.1f}%)")
     print(f"   Safe: {safe_final:,} ({safe_final/len(unique_samples)*100:.1f}%)")
     print("\n" + "="*70)
-    print("✅ DATASET EXPANSION COMPLETE!")
+    print(" DATASET EXPANSION COMPLETE!")
     print("="*70)
-    print("\n🎯 Next step: Run 'python model_training.py' to train!")
+    print("\n Next step: Run 'python model_training.py' to train!")
     
     return output_file, len(unique_samples)
 

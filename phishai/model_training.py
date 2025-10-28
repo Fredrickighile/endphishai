@@ -172,10 +172,10 @@ def train_advanced_model(csv_path="phishing_data_FIXED.csv", output_dir="./model
     joblib.dump(model, output_path / "phishing_model.pkl")
     joblib.dump(vectorizer, output_path / "vectorizer.pkl")
     joblib.dump(scaler, output_path / "scaler.pkl")
-    print(f"   ✅ Model saved to: {output_path}\n")
+    print(f"    Model saved to: {output_path}\n")
 
     print("="*70)
-    print("✨ ADVANCED TRAINING COMPLETE!")
+    print(" ADVANCED TRAINING COMPLETE!")
     print("="*70)
     print(f" Final Accuracy: {accuracy:.1%}")
     print(f" Total Features: {X_train_combined.shape[1]:,}")

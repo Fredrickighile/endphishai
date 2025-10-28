@@ -38,4 +38,4 @@ with path.open("w", newline="", encoding="utf-8") as f:
     writer.writerow(["text", "label"])
     writer.writerows(unique)
 
-print(f"✅ Added {len(new_examples)} new examples. Total now: {len(unique)} rows.")
+print(f" Added {len(new_examples)} new examples. Total now: {len(unique)} rows.")
