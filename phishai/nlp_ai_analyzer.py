@@ -154,12 +154,12 @@ class RealNLPPhishingAI:
             
             final_score = min(base_score + keyword_boost, 1.0)
             
-            print(f"🤖 Transformer Analysis: {result['label']} ({result['score']:.2%}) → Phishing Score: {final_score:.2%}")
+            print(f" Transformer Analysis: {result['label']} ({result['score']:.2%}) → Phishing Score: {final_score:.2%}")
             
             return final_score
             
         except Exception as e:
-            print(f"❌ Transformer error: {e}")
+            print(f" Transformer error: {e}")
             return self._calculate_suspicious_tokens(text)
     
     def _calculate_keyword_boost(self, text: str) -> float:
@@ -374,7 +374,7 @@ def analyze_text_with_nlp_ai(text: str) -> Dict:
 
 if __name__ == "__main__":
     print("\n" + "="*70)
-    print("🤖 REAL TRANSFORMER NLP AI - TEST SUITE")
+    print(" REAL TRANSFORMER NLP AI - TEST SUITE")
     print("="*70 + "\n")
     
     test_cases = [
@@ -386,7 +386,7 @@ if __name__ == "__main__":
     ]
     
     for text, expected in test_cases:
-        print(f"\n📝 Text: {text[:60]}...")
+        print(f"\n Text: {text[:60]}...")
         print(f"Expected: {expected}")
         print("-" * 70)
         

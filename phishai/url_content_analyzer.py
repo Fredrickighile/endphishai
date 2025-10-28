@@ -34,6 +34,7 @@ class WorldClassContentAnalyzer:
             'absa.co.za', 'fnb.co.za', 'nedbank.co.za', 'capitecbank.co.za',
             'kcbgroup.com', 'equitybankgroup.com', 'safaricom.co.ke',
             'mtn.com', 'airtel.africa', 'orange.com'
+            'gosub.ng', 'jumia.com.ng', 'konga.com', 'paystack.com', 'flutterwave.com'
         }
         
         

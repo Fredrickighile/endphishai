@@ -157,17 +157,7 @@ class ProductionPhishingDetector:
         Returns:
             Dictionary containing prediction, confidence score, and explanations
         """
-        # Log detection request details for debugging
-        print(f"\n{'='*70}")
-        print(f"DETECTION REQUEST")
-        print(f"{'='*70}")
-        print(f"Input: {input_text[:100]}...")
-        print(f"Content Analysis: {use_content_analysis}")
-        print(f"Safe Analyzer: {safe_analyzer is not None}")
-        print(f"Is URL: {self._is_url(input_text)}")
-        print(f"NLP AI Available: {NLP_AI_AVAILABLE}")
-        print(f"{'='*70}\n")
-
+       
         # Clean and validate input
         input_text = self._sanitize_input(input_text)
 
@@ -253,7 +243,7 @@ class ProductionPhishingDetector:
             content_result = safe_analyzer.analyze_safely(url)
 
             if content_result.get('success'):
-                print(f"✅ Content scan successful")
+                print(f" Content scan successful")
                 print(f"   Content Score: {content_result.get('phishing_score', 0):.2%}")
 
                 indicators = content_result.get('indicators_found', [])
@@ -278,7 +268,7 @@ class ProductionPhishingDetector:
 
                 # Handle whitelisted domains
                 if content_result.get('whitelisted'):
-                    print("✅ Domain is whitelisted - returning safe result with stats")
+                    print(" Domain is whitelisted - returning safe result with stats")
                     return {
                         'prediction': 'safe',
                         'confidence': 0.0,
@@ -313,13 +303,13 @@ class ProductionPhishingDetector:
                 # Determine final prediction based on combined score
                 if final_score >= 0.70:
                     prediction = 'phishing'
-                    print(f"🚨 VERDICT: PHISHING")
+                    print(f" VERDICT: PHISHING")
                 elif final_score >= 0.50:
                     prediction = 'suspicious'
-                    print(f"⚠️ VERDICT: SUSPICIOUS")
+                    print(f" VERDICT: SUSPICIOUS")
                 else:
                     prediction = 'safe'
-                    print(f"✅ VERDICT: SAFE")
+                    print(f" VERDICT: SAFE")
 
                 # Combine explanations from both analyses
                 content_summary = ', '.join(indicators[:2]) if indicators else 'No content indicators'
@@ -343,7 +333,7 @@ class ProductionPhishingDetector:
             else:
                 # Content analysis failed - return standard result with error info
                 error_msg = content_result.get('error', 'Unknown error')
-                print(f"❌ Content scan failed: {error_msg}")
+                print(f" Content scan failed: {error_msg}")
                 print(f"{'='*70}\n")
                 standard_result['content_analysis_performed'] = False
                 standard_result['content_analysis_error'] = error_msg
@@ -351,7 +341,7 @@ class ProductionPhishingDetector:
 
         except Exception as e:
             # Handle any unexpected errors during content analysis
-            print(f"❌ Content analysis exception: {e}")
+            print(f" Content analysis exception: {e}")
             print(f"{'='*70}\n")
             standard_result = self.detect_phishing(url, use_content_analysis=False)
             standard_result['content_analysis_performed'] = False
@@ -480,7 +470,7 @@ class ProductionPhishingDetector:
             parsed = urlparse(text)
             domain = parsed.netloc.lower()
 
-            # ✅ Skip known safe Nigerian domains early
+            #  Skip known safe Nigerian domains early
             if self._is_legitimate_nigerian_domain(domain):
                 return {'score': 0.0, 'reasons': ['Verified Nigerian domain']}
 

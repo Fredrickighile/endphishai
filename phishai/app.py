@@ -48,7 +48,7 @@ if TWILIO_IMPORTED and TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_PHONE
     try:
         twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
         SMS_AVAILABLE = True
-        print("✅ Twilio SMS: Configured and ready")
+        print(" Twilio SMS: Configured and ready")
     except Exception as e:
         print("Twilio SMS: Configuration error")
 elif TWILIO_IMPORTED:
@@ -60,10 +60,10 @@ else:
 try:
     import magic
     MAGIC_AVAILABLE = True
-    print("✅ python-magic: Loaded (file security enabled)")
+    print(" python-magic: Loaded (file security enabled)")
 except ImportError:
     MAGIC_AVAILABLE = False
-    print("⚠️ python-magic: Not installed (MIME validation disabled)")
+    print(" python-magic: Not installed (MIME validation disabled)")
     print("   Install with: pip install python-magic-bin (Windows)")
     print("   or: pip install python-magic (Linux/Mac)")
 
@@ -777,7 +777,7 @@ def predict():
             # PRIORITY 1: Check content_analysis_data (set by phishing_detector)
             if 'content_analysis_data' in ai_result:
                 content_data = ai_result['content_analysis_data']
-                print(f"✅ Found content_analysis_data: {content_data}")
+                print(f" Found content_analysis_data: {content_data}")
             # PRIORITY 2: Check analysis field  
             elif 'analysis' in ai_result and isinstance(ai_result['analysis'], dict):
                 analysis = ai_result['analysis']
@@ -787,7 +787,7 @@ def predict():
                     'forms_count': analysis.get('forms_count', 0),
                     'external_links': analysis.get('external_links', 0)
                 }
-                print(f"✅ Extracted from analysis field: {content_data}")
+                print(f" Extracted from analysis field: {content_data}")
             else:
                 content_data = {
                     'html_elements': 0,
@@ -795,7 +795,7 @@ def predict():
                     'forms_count': 0,
                     'external_links': 0
                 }
-                print(f"⚠️ No content data found, using zeros")
+                print(f" No content data found, using zeros")
             
             # Add to response
             response["content_analysis"] = content_data
@@ -980,7 +980,7 @@ def send_sms():
         
         if threat in ['phishing', 'malicious']:
             message = (
-                "🚨 PHISHING ALERT!\n\n"
+                " PHISHING ALERT!\n\n"
                 f"EndPhishAI detected a DANGEROUS link:\n{url}\n\n"
                 "DO NOT CLICK OR SHARE\n\n"
                 "Stay safe!\n"
@@ -988,7 +988,7 @@ def send_sms():
             )
         elif threat == 'suspicious':
             message = (
-                "⚠️ SUSPICIOUS CONTENT\n\n"
+                " SUSPICIOUS CONTENT\n\n"
                 f"EndPhishAI found suspicious patterns in:\n{url}\n\n"
                 "Proceed with caution\n\n"
                 "- EndPhishAI Security"
@@ -1052,22 +1052,7 @@ def send_sms():
 
 if __name__ == "__main__":
     # Startup information
-    print("\n" + "="*60)
-    print("🚀 PhishAI Detection Service Starting...")
-    print("="*60)
-    print(f"Server: http://127.0.0.1:8000")
-    print(f"ML Model: Loaded")
-    print(f"File Upload: Available")
-    print(f"Content Analysis: Available (WITH SAFETY WRAPPER)")
-    print(f"SMS Alerts: {'Configured' if SMS_AVAILABLE else 'Not configured (optional)'}")
-    print(f"Google API: {'Configured' if GOOGLE_API_KEY else 'Not configured (optional)'}")
-    print(f"VirusTotal: {'Configured' if VIRUSTOTAL_API_KEY else 'Not configured (optional)'}")
-    print(f"PhishTank: Available")
-    print(f"URLhaus: Available")
-    print(f"Supported Files: PDF, TXT, CSV, HTML, DOCX")
-    print(f"Total Protection Layers: 7")
-    print(f"🛡️ Safety Features: Rate Limiting, Caching, Blacklist, Whitelist")
-    print("="*60 + "\n")
+    
     
     app.run(host="127.0.0.1", port=8000, debug=True)
 
