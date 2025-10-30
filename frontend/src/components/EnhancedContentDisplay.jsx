@@ -16,7 +16,7 @@ export default function EnhancedContentDisplay({ result }) {
   const hasNlpAnalysis = result?.nlp_analysis?.performed;
   const hasContentAnalysis = result?.content_analysis_performed;
 
-  // ✅ DON'T RENDER IF NO DATA
+  //  DON'T RENDER IF NO DATA
   if (!hasNlpAnalysis && !hasContentAnalysis) {
     return null;
   }
@@ -25,11 +25,11 @@ export default function EnhancedContentDisplay({ result }) {
   const contentIndicators = result.content_indicators || [];
   const hasContentIndicators = contentIndicators.length > 0;
 
-  // ✅ CHECK IF CONTENT SCAN ACTUALLY WORKED
+  //  CHECK IF CONTENT SCAN ACTUALLY WORKED
   const contentScanFailed = result.content_analysis_error;
   const contentData = result.content_analysis || result.analysis;
 
-  // ✅ VERIFY WE HAVE REAL DATA (not zeros)
+  //  VERIFY WE HAVE REAL DATA (not zeros)
   const hasRealContentData =
     contentData &&
     (contentData.html_elements > 0 ||
@@ -156,7 +156,7 @@ export default function EnhancedContentDisplay({ result }) {
         </div>
       )}
 
-      {/* ✅ FIXED CONTENT ANALYSIS SECTION */}
+      {/*  FIXED CONTENT ANALYSIS SECTION */}
       {hasContentAnalysis && (
         <div className="relative">
           <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-xl"></div>
@@ -168,7 +168,7 @@ export default function EnhancedContentDisplay({ result }) {
             </h3>
 
             <div className="space-y-4">
-              {/* ✅ SHOW ERROR IF SCAN FAILED */}
+              {/*  SHOW ERROR IF SCAN FAILED */}
               {contentScanFailed ? (
                 <div className="bg-red-900/40 border-2 border-red-600/50 rounded-lg p-4">
                   <div className="flex items-start gap-3">
@@ -194,11 +194,11 @@ export default function EnhancedContentDisplay({ result }) {
                 </div>
               ) : hasRealContentData ? (
                 <>
-                  {/* ✅ SUCCESS - SHOW REAL DATA */}
+                  {/*  SUCCESS - SHOW REAL DATA */}
                   <div className="flex items-center gap-2 text-green-300">
                     <CheckCircle className="w-4 h-4" />
                     <span className="text-sm font-medium">
-                      ✅ Webpage scanned successfully -{" "}
+                      Webpage scanned successfully -{" "}
                       {contentData.html_elements?.toLocaleString() || 0}{" "}
                       elements analyzed
                     </span>
@@ -214,7 +214,7 @@ export default function EnhancedContentDisplay({ result }) {
                     </div>
                   )}
 
-                  {/* ✅ REAL STATS (NO FALLBACKS) */}
+                  {/*  REAL STATS (NO FALLBACKS) */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                     <div className="bg-gray-800/60 rounded-lg p-3 border border-gray-700">
                       <div className="text-xs text-gray-400 mb-1">
@@ -306,7 +306,7 @@ export default function EnhancedContentDisplay({ result }) {
                   )}
                 </>
               ) : (
-                /* ✅ NO DATA CASE */
+                /*  NO DATA CASE */
                 <div className="bg-yellow-900/40 border-2 border-yellow-600/50 rounded-lg p-4">
                   <div className="flex items-start gap-3">
                     <AlertTriangle className="w-6 h-6 text-yellow-400 flex-shrink-0" />

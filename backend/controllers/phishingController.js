@@ -56,7 +56,7 @@ export const analyzePhish = async (req, res) => {
         break;
       } catch (error) {
         lastError = error;
-        console.error(`❌ Attempt ${attempt} failed:`, error.message);
+        console.error(` Attempt ${attempt} failed:`, error.message);
 
         // Don't retry on client errors (4xx)
         if (
@@ -108,12 +108,12 @@ export const analyzePhish = async (req, res) => {
     };
 
     console.log(
-      `✅ Analysis complete: ${response.prediction} (${response.confidence})`
+      `Analysis complete: ${response.prediction} (${response.confidence})`
     );
 
     return res.json(response);
   } catch (error) {
-    console.error("❌ analyzePhish error:", error.message);
+    console.error(" analyzePhish error:", error.message);
 
     // Determine error type and message
     let errorResponse = {

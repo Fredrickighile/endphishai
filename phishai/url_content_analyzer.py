@@ -629,11 +629,11 @@ class WorldClassContentAnalyzer:
             external_links = len([l for l in links if 'http' in l.get('href', '')])
             
             indicators = [
-                f"✓ Verified {domain} - Trusted domain",
-                f"✓ Scanned {html_elements:,} HTML elements",
-                f"✓ HTTPS encryption active",
-                f"✓ {scripts} JavaScript files analyzed",
-                f"✓ {external_links} external links verified"
+                f" Verified {domain} - Trusted domain",
+                f" Scanned {html_elements:,} HTML elements",
+                f" HTTPS encryption active",
+                f" {scripts} JavaScript files analyzed",
+                f" {external_links} external links verified"
             ]
             
         except:

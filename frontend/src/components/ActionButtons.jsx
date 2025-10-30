@@ -26,13 +26,13 @@ export default function ActionButtons({ result }) {
       const filename = `EndPhishAI_Security_Report_${Date.now()}.pdf`;
       doc.save(filename);
       showNotification(
-        "✅ Professional PDF report downloaded successfully!",
+        " Professional PDF report downloaded successfully!",
         "success"
       );
     } catch (error) {
       console.error("PDF generation failed:", error);
       showNotification(
-        "❌ PDF generation failed. Downloading text report instead.",
+        " PDF generation failed. Downloading text report instead.",
         "error"
       );
       setTimeout(downloadTextReport, 1000);
@@ -51,9 +51,9 @@ export default function ActionButtons({ result }) {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showNotification("✅ Text report downloaded successfully!", "success");
+      showNotification(" Text report downloaded successfully!", "success");
     } catch (error) {
-      showNotification("❌ Failed to download text report", "error");
+      showNotification(" Failed to download text report", "error");
     }
   };
 

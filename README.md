@@ -91,6 +91,23 @@ When you lose internet connection, EndPhishAI still protects you:
 - ⚡ **Fast on Slow Networks** - Optimized loading
 - 🔋 **Power Efficient** - Text-based analysis uses minimal CPU
 
+---
+
+## 📸 PWA in Action (Proof It Works!)
+
+EndPhishAI isn’t just theory — it’s ** installable, and fully functional** as a Progressive Web App (PWA).  
+Here’s what it looks like **installed and running on a real phone**:
+
+| Screenshot                                            | Description                                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![Home Screen Install](./screenshots/pwa_install.jpg) | 📲 **Installed on Home Screen** — EndPhishAI appears like a native app. |
+| ![Launch Screen](./screenshots/pwa_launch.jpg)        |
+| ![Desktop Mode](./screenshots/Desktop_mode.png)       |
+
+> 🧩 Screenshots taken directly from my phone to demonstrate **real-world PWA functionality**
+
+---
+
 ### 🚀 Mobile App Roadmap
 
 **Phase 1 (Current):** ✅ PWA with offline support  

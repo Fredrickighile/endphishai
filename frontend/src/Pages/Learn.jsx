@@ -1114,8 +1114,8 @@ export default function Learn() {
                         >
                           {selectedAnswer ===
                           quizQuestions[currentQuestion].correct
-                            ? "🎉 Correct! Well done!"
-                            : "❌ Not quite right"}
+                            ? " Correct! Well done!"
+                            : " Not quite right"}
                         </h4>
                         <p className="text-gray-300 leading-relaxed">
                           {quizQuestions[currentQuestion].explanation}
