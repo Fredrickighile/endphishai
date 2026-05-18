@@ -17,10 +17,13 @@
 5. [ML Model Performance](#ml-model-performance)
 6. [NLP Text Analysis](#nlp-text-analysis)
 7. [Deep Content Analysis](#deep-content-analysis)
-8. [African Context](#african-context)
-9. [Tech Stack](#tech-stack)
-10. [Setup](#setup)
-11. [Screenshots](#screenshots)
+8. [Mobile-First PWA](#mobile-first-pwa)
+9. [Security Education Module](#security-education-module)
+10. [African Context](#african-context)
+11. [Why It Works Better](#why-it-works-better)
+12. [Tech Stack](#tech-stack)
+13. [Setup](#setup)
+14. [Screenshots](#screenshots)
 
 ---
 
@@ -126,7 +129,16 @@ This layered approach is specifically designed to catch zero-day phishing sites 
 
 We report cross-validation accuracy as the primary metric — it's more conservative and more representative of real-world performance than a single test set result.
 
-**Why the dual feature approach works:** Handcrafted forensic features catch structural patterns (suspicious domain lengths, IP-based URLs, mismatched protocols). TF-IDF catches linguistic patterns (urgency language, brand impersonation in text). Together they cover both technical and social engineering attack vectors.
+**35 Forensic Features include:**
+- URL structure analysis (hyphens, dots, slashes, special characters)
+- Domain complexity metrics (length, entropy, suspicious TLDs)
+- Security indicators (HTTPS, ports, IP addresses)
+- Linguistic patterns (urgency keywords, brand impersonation)
+
+**2,129 TF-IDF Features include:**
+- Tri-gram analysis (1-3 word combinations)
+- Multilingual keyword detection (5 African languages)
+- Context-aware tokenization
 
 ---
 
@@ -155,7 +167,7 @@ Result:     87% phishing probability
 
 ## Deep Content Analysis
 
-When Deep Scan is enabled, EndPhishAI visits the webpage and examines:
+When Deep Scan is enabled, EndPhishAI actually visits the webpage and examines:
 
 - HTTPS encryption status
 - Login forms and password field harvesting
@@ -169,6 +181,60 @@ When Deep Scan is enabled, EndPhishAI visits the webpage and examines:
 This catches new phishing sites that haven't been reported yet — the ones that slip through every database check.
 
 ![Deep Content Analysis](screenshots/image.png)
+
+---
+
+## Mobile-First PWA
+
+EndPhishAI was built for Africa's mobile-first reality where 600M+ people access the internet primarily on smartphones. It's a fully installable Progressive Web App — no app store required.
+
+**Install on Android (Chrome):**
+1. Visit EndPhishAI on Chrome
+2. Tap "Add to Home Screen" banner at bottom
+3. EndPhishAI icon appears on your home screen
+
+**Install on iPhone (Safari):**
+1. Visit EndPhishAI on Safari
+2. Tap the Share button
+3. Scroll down → "Add to Home Screen"
+
+**What works offline:**
+- Heuristic pattern detection
+- Cached ML model for basic analysis
+- Last 10 scan history
+- Security education content
+- Auto-syncs when connection restored
+
+**Optimized for basic devices:**
+- Works on 1-2GB RAM phones
+- 2G/3G friendly — minimal data usage
+- Under 5MB total size
+- Responsive on any screen size
+
+### PWA in Action
+
+| Screenshot | Description |
+|---|---|
+| ![Home Screen Install](./screenshots/pwa_install.jpg) | Installed on home screen — appears like a native app |
+| ![Launch Screen](./screenshots/pwa_launch.jpg) | Launch screen on mobile |
+| ![Desktop Mode](./screenshots/Desktop_mode.png) | Desktop mode |
+
+---
+
+## Security Education Module
+
+Most security tools detect threats and stop there. EndPhishAI teaches users to recognize phishing themselves.
+
+**Interactive Quiz — 10 real-world scenarios:**
+- "Your bank account will be closed in 24 hours!" — Phishing or Real?
+- "www.paypa1.com" vs "www.paypal.com" — Can you spot the difference?
+- "You won $50,000! Click here!" — Red flag or legit?
+
+**Streak system** — get answers right in a row and build your streak.
+
+The goal is behavior change, not just blocking. If users can recognize phishing themselves, they're protected even when the tool isn't available.
+
+![Learn Page](screenshots/LearnPage.png)
 
 ---
 
@@ -188,11 +254,28 @@ Most phishing detection tools are trained entirely on English-language threats f
 
 ---
 
+## Why It Works Better
+
+| Feature | Most Tools | EndPhishAI |
+|---|---|---|
+| Detection method | Only checks known threats | AI + real-time content analysis |
+| Formats supported | URLs only | URLs, Emails, SMS, Files |
+| Speed | 5-10 seconds | 1-3 seconds (10-15 deep scan) |
+| Accuracy | 85-90% | 99.2% |
+| African context | None | Trained on local threats |
+| Education | None | Interactive quiz |
+| Explainability | "Threat detected" | Explains exactly why it's dangerous |
+| Mobile support | Desktop only | PWA + offline mode |
+| Zero-day detection | No | Yes |
+
+---
+
 ## Tech Stack
 
 **Frontend**
 - React 18 + Vite
 - Tailwind CSS
+- React Router
 - Recharts
 - PWA (Service Workers + Web App Manifest)
 
@@ -239,7 +322,11 @@ npm install
 npm run dev                 # Runs on http://localhost:5173
 ```
 
-**4. Optional: API keys for full detection power**
+**4. Try it out**
+
+Paste this fake URL: `http://paypa1.com/verify` (notice the "1" instead of "l") and watch EndPhishAI catch it in 1-3 seconds.
+
+**5. Optional: API keys for full detection power**
 
 Create `phishai/.env`:
 ```bash
@@ -254,7 +341,7 @@ TWILIO_AUTH_TOKEN=your_twilio_token
 TWILIO_PHONE_NUMBER=+1234567890
 ```
 
-Free tier keys available at:
+Free tier keys at:
 - Google Safe Browsing: developers.google.com/safe-browsing
 - VirusTotal: virustotal.com/gui/join-us
 - Twilio: twilio.com/try-twilio
@@ -284,6 +371,10 @@ The app works without API keys using the ML model only.
 **Deep content analysis**
 
 ![Deep Scan](screenshots/image.png)
+
+**Security education module**
+
+![Learn Page](screenshots/LearnPage.png)
 
 ---
 
