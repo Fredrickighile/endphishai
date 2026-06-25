@@ -5,9 +5,10 @@ import { ThreatBanner } from "../components/threatbanner";
 import { ProtectionLayers } from "../components/protectionLayer";
 import { BackendStatus } from "../components/BackendStatus";
 import { SMSAlertSection } from "../components/SMSAlertSection";
-import { useBackendStatus } from "../hooks/useBackendStatus";
+import { useBackendStatus, API_BASE_URL } from "../hooks/useBackendStatus";
 import ActionButtons from "../components/ActionButtons";
 import EnhancedContentDisplay from "../components/EnhancedContentDisplay";
+
 import {
   Shield,
   AlertTriangle,
@@ -43,7 +44,7 @@ export default function Detect() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scanMode, setScanMode] = useState("url");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState("");
+  // const [filePreview, setFilePreview] = useState("");
   const [useContentAnalysis, setUseContentAnalysis] = useState(false);
   const [contentAnalysisLoading, setContentAnalysisLoading] = useState(false);
   const fileInputRef = useRef(null);
@@ -55,7 +56,7 @@ export default function Detect() {
     setResult(null);
     setError("");
     setSelectedFile(null);
-    setFilePreview("");
+    // setFilePreview("");
     setUseContentAnalysis(false);
   };
 
@@ -68,7 +69,7 @@ export default function Detect() {
 
     if (!allowedExtensions.includes(fileExtension)) {
       setError(
-        `File type .${fileExtension} not supported. Allowed: PDF, TXT, CSV, HTML, DOCX`
+        `File type .${fileExtension} not supported. Allowed: PDF, TXT, CSV, HTML, DOCX`,
       );
       return;
     }
@@ -81,11 +82,11 @@ export default function Detect() {
     setError("");
     setSelectedFile(file);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFilePreview(`📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
-    };
-    reader.readAsDataURL(file);
+    // const reader = new FileReader();
+    // reader.onload = (e) => {
+    //   setFilePreview(`📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
+    // };
+    // reader.readAsDataURL(file);
   };
 
   const scanFile = async () => {
@@ -113,7 +114,7 @@ export default function Detect() {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
-      const response = await fetch("http://127.0.0.1:8000/upload-file", {
+      const response = await fetch(`${API_BASE_URL}/upload-file`, {
         method: "POST",
         body: formData,
       });
@@ -124,7 +125,7 @@ export default function Detect() {
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
-          errorData.message || `Server error: ${response.status}`
+          errorData.message || `Server error: ${response.status}`,
         );
       }
 
@@ -170,7 +171,7 @@ export default function Detect() {
         requestBody.content_analysis = true;
       }
 
-      const response = await fetch("http://127.0.0.1:8000/predict", {
+      const response = await fetch(`${API_BASE_URL}/predict`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -617,7 +618,7 @@ export default function Detect() {
                         <button
                           onClick={() => {
                             setSelectedFile(null);
-                            setFilePreview("");
+                            // setFilePreview("");
                           }}
                           className="text-red-400 hover:text-red-300 p-2 transition-all"
                         >
@@ -685,8 +686,8 @@ export default function Detect() {
                     {scanMode === "file"
                       ? "Analyzing file content..."
                       : contentAnalysisLoading
-                      ? "Deep scanning webpage..."
-                      : "Analyzing with AI..."}
+                        ? "Deep scanning webpage..."
+                        : "Analyzing with AI..."}
                   </span>
                   <span className="text-xs sm:text-sm text-blue-300 font-bold">
                     {Math.round(scanProgress)}%
@@ -726,8 +727,8 @@ export default function Detect() {
                       {scanMode === "file"
                         ? "Analyzing File..."
                         : contentAnalysisLoading
-                        ? "Deep Scanning..."
-                        : "Scanning..."}
+                          ? "Deep Scanning..."
+                          : "Scanning..."}
                     </span>
                   </>
                 ) : (
@@ -757,7 +758,7 @@ export default function Detect() {
           </div>
         )}
 
-        {/* ✅ RESULTS SECTION - REAL FIX FOR EXTRA SPACE */}
+        {/*  RESULTS SECTION - REAL FIX FOR EXTRA SPACE */}
         {result && (
           <>
             <ThreatBanner result={result} />

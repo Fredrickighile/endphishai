@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Phone, Send, CheckCircle, AlertCircle } from "lucide-react";
+import { API_BASE_URL } from "../hooks/useBackendStatus";
 
 export const SMSAlertSection = ({ result }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -17,11 +18,9 @@ export const SMSAlertSection = ({ result }) => {
     setError("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/send-sms", {
+      const response = await fetch(`${API_BASE_URL}/send-sms`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           phoneNumber: phoneNumber,
           threat: result.final_status || result.ai_result,
@@ -40,21 +39,21 @@ export const SMSAlertSection = ({ result }) => {
       } else {
         if (data.error === "sms_unavailable") {
           setError(
-            "SMS service temporarily unavailable. Please try again later or contact support."
+            "SMS service temporarily unavailable. Please try again later.",
           );
         } else if (data.error === "invalid_phone") {
           setError(
-            "Invalid phone number. Please include country code (e.g., +234 for Nigeria)"
+            "Invalid phone number. Please include country code (e.g., +234 for Nigeria)",
           );
         } else if (data.error === "unverified_number") {
           setError(
-            "This phone number needs verification. Please contact support."
+            "This phone number needs verification. Please contact support.",
           );
         } else {
           setError("Unable to send SMS. Please try again later.");
         }
       }
-    } catch (err) {
+    } catch {
       setError("Service temporarily unavailable. Please try again later.");
     } finally {
       setSending(false);

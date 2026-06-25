@@ -48,7 +48,7 @@ yarn-error.log*
 Thumbs.db
 
 # ML Models (optional - if models are large)
-*.pkl
+
 *.joblib
 *.h5
 
