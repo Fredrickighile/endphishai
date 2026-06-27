@@ -630,8 +630,8 @@ def home():
         "virustotal_api_configured": bool(VIRUSTOTAL_API_KEY),
         "protection_layers": 7,
         "databases": [
-            "Google Safe Browsing", 
-            "VirusTotal", 
+            "Google Safe Browsing",
+            "VirusTotal",
             "PhishTank",
             "URLhaus",
             "Custom ML Model",
@@ -641,6 +641,10 @@ def home():
         "supported_files": ["PDF", "TXT", "CSV", "HTML", "DOCX"]
     })
 
+
+@app.route("/health")
+def health():
+    return jsonify({"status": "healthy"}), 200
 
 @app.route("/recent-threats", methods=["GET"])
 def recent_threats():
