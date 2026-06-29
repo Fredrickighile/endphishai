@@ -1,11 +1,9 @@
-// About.jsx - Personal story focused version
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Shield,
   Brain,
   Globe,
-  Smartphone,
   Target,
   Zap,
   Activity,
@@ -17,390 +15,288 @@ import {
   Menu,
   X,
   Award,
-  Heart,
   Users,
   AlertTriangle,
   Lock,
-  TrendingUp,
   BookOpen,
+  Code,
+  MessageSquare,
 } from "lucide-react";
 
 export default function About() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const features = [
+  const capabilities = [
     {
       icon: Brain,
-      title: "AI-Powered Analysis",
+      title: "Multilingual NLP Engine",
       description:
-        "Advanced machine learning model trained on millions of phishing patterns to detect even the most sophisticated attacks.",
-      color: "from-blue-500 to-cyan-500",
-      stats: "99.7% Accuracy",
+        "Custom-built intent classifier that reads phishing signals in English, Swahili, Hausa, Yoruba, Pidgin and French. Detects urgency, credential harvesting, and threat language across all six.",
+      gradient: "from-blue-500 to-cyan-500",
+      badge: "6 Languages",
     },
     {
       icon: Shield,
-      title: "4-Layer Protection",
+      title: "7-Layer Detection",
       description:
-        "Google Safe Browsing, VirusTotal, URLhaus, plus our custom ML model working in harmony.",
-      color: "from-purple-500 to-pink-500",
-      stats: "3 Databases + ML",
+        "Every scan runs through: custom ML model (Random Forest), structural heuristics, NLP intent analysis, Google Safe Browsing, VirusTotal, PhishTank, and URLhaus.",
+      gradient: "from-purple-500 to-pink-500",
+      badge: "7 Layers",
     },
     {
-      icon: Zap,
-      title: "Real-time SMS Alerts",
+      icon: Target,
+      title: "Homoglyph & Typosquat Detection",
       description:
-        "Instant notifications via SMS when threats are detected, keeping your team informed even offline.",
-      color: "from-orange-500 to-red-500",
-      stats: "< 2s Response",
+        "Catches paypa1.com, g00gle.com, arnazon.com and 30+ African brand impersonations that character-substitution attacks rely on. Most tools miss these entirely.",
+      gradient: "from-orange-500 to-red-500",
+      badge: "Advanced",
     },
     {
       icon: Globe,
-      title: "African Market Focus",
+      title: "African Brand Intelligence",
       description:
-        "Specifically trained on phishing patterns targeting African SMEs, mobile money scams, and local banking threats.",
-      color: "from-green-500 to-emerald-500",
-      stats: "Local Context",
+        "Specifically trained to detect impersonation of MTN, M-Pesa, Safaricom, GTBank, FirstBank, Airtel, Flutterwave, Paystack and more. No Western tool covers these.",
+      gradient: "from-green-500 to-emerald-500",
+      badge: "30+ Brands",
     },
   ];
 
-  const howItWorks = [
+  const techStack = [
     {
-      step: "01",
-      title: "Paste & Scan",
-      description:
-        "Copy any suspicious URL, SMS message, or email content and paste it into our intelligent scanner.",
-      icon: Target,
-      color: "blue",
+      layer: "Layer 1",
+      name: "Custom ML Model",
+      detail: "Random Forest trained on 10,000+ phishing samples",
+      status: "Active",
     },
     {
-      step: "02",
-      title: "AI Analysis",
-      description:
-        "Our system simultaneously checks multiple threat databases and runs deep pattern analysis using machine learning.",
-      icon: Brain,
-      color: "purple",
+      layer: "Layer 2",
+      name: "Structural Heuristics",
+      detail: "URL patterns, TLD analysis, homoglyphs, typosquats",
+      status: "Active",
     },
     {
-      step: "03",
-      title: "Get Results",
-      description:
-        "Receive instant, color-coded results with clear explanations and actionable security recommendations.",
-      icon: CheckCircle,
-      color: "green",
+      layer: "Layer 3",
+      name: "Multilingual NLP",
+      detail: "Intent classification in 6 languages",
+      status: "Active",
     },
     {
-      step: "04",
-      title: "Stay Protected",
-      description:
-        "Optional SMS alerts keep you and your team informed about detected threats in real-time.",
-      icon: Smartphone,
-      color: "orange",
-    },
-  ];
-
-  const stats = [
-    { label: "Detection Accuracy", value: "98%", icon: Target },
-    { label: "Response Time", value: "< 2s", icon: Zap },
-    { label: "Threats Blocked", value: "15K+", icon: Shield },
-    { label: "Protection Layers", value: "4", icon: Activity },
-  ];
-
-  const impactStats = [
-    {
-      icon: Users,
-      value: "10K+",
-      label: "SMEs Protected",
-      color: "from-blue-500 to-cyan-500",
+      layer: "Layer 4",
+      name: "Google Safe Browsing",
+      detail: "Real-time threat database lookup",
+      status: "Active",
     },
     {
-      icon: AlertTriangle,
-      value: "47%",
-      label: "Banking Scams Blocked",
-      color: "from-red-500 to-orange-500",
+      layer: "Layer 5",
+      name: "VirusTotal",
+      detail: "70+ antivirus engine consensus",
+      status: "Active",
     },
     {
-      icon: TrendingUp,
-      value: "99.7%",
-      label: "Success Rate",
-      color: "from-green-500 to-teal-500",
+      layer: "Layer 6",
+      name: "PhishTank",
+      detail: "Community-verified phishing database",
+      status: "Active",
+    },
+    {
+      layer: "Layer 7",
+      name: "URLhaus",
+      detail: "Malware URL intelligence feed",
+      status: "Active",
     },
   ];
 
   return (
     <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-3xl animate-pulse" />
         <div
           className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
-        ></div>
+        />
         <div
           className="absolute bottom-0 left-1/3 w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "2s" }}
-        ></div>
-
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-20"></div>
+        />
       </div>
 
-      {/* Navigation */}
+      {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
         <div className="max-w-7xl mx-auto">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl"></div>
-            <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
-              <div className="px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <Link to="/" className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75"></div>
-                      <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
-                        <Brain className="w-6 h-6 text-white" />
-                      </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl" />
+            <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl px-6 py-3">
+              <div className="flex items-center justify-between">
+                <Link to="/" className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75" />
+                    <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
+                      <Brain className="w-6 h-6 text-white" />
                     </div>
-                    <div>
-                      <span className="text-white font-bold text-xl tracking-tight">
-                        EndPhishAI
+                  </div>
+                  <div>
+                    <span className="text-white font-bold text-xl">
+                      EndPhishAI
+                    </span>
+                    <div className="flex items-center gap-1 mt-0.5">
+                      <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse" />
+                      <span className="text-green-400 text-xs font-medium">
+                        AI Active
                       </span>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-green-400 text-xs font-medium">
-                          AI Active
-                        </span>
-                      </div>
                     </div>
-                  </Link>
-
-                  <div className="hidden lg:flex items-center gap-1">
-                    <Link
-                      to="/"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium"
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/detect"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <Scan className="w-4 h-4" />
-                      Detect
-                    </Link>
-
-                    <Link
-                      to="/learn"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      Learn
-                    </Link>
-                    <Link
-                      to="/about"
-                      className="px-4 py-2 text-white bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <Info className="w-4 h-4" />
-                      About
-                    </Link>
                   </div>
-
-                  <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl transition-all"
-                  >
-                    {mobileMenuOpen ? (
-                      <X className="w-6 h-6" />
-                    ) : (
-                      <Menu className="w-6 h-6" />
-                    )}
-                  </button>
+                </Link>
+                <div className="hidden lg:flex items-center gap-1">
+                  {[
+                    { to: "/", label: "Home" },
+                    {
+                      to: "/detect",
+                      label: "Detect",
+                      icon: <Scan className="w-4 h-4" />,
+                    },
+                    {
+                      to: "/learn",
+                      label: "Learn",
+                      icon: <BookOpen className="w-4 h-4" />,
+                    },
+                    {
+                      to: "/about",
+                      label: "About",
+                      icon: <Info className="w-4 h-4" />,
+                      active: true,
+                    },
+                  ].map((l) => (
+                    <Link
+                      key={l.to}
+                      to={l.to}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${l.active ? "text-white bg-white/10" : "text-gray-300 hover:text-white hover:bg-white/10"}`}
+                    >
+                      {l.icon}
+                      {l.label}
+                    </Link>
+                  ))}
                 </div>
-
-                {mobileMenuOpen && (
-                  <div className="lg:hidden mt-4 pt-4 border-t border-white/10 space-y-2">
-                    <Link
-                      to="/"
-                      className="px-4 py-3 text-white hover:bg-white/10 rounded-xl text-sm font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/detect"
-                      className="px-4 py-3 text-white hover:bg-white/10 rounded-xl text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Scan className="w-4 h-4" />
-                      Detect Threats
-                    </Link>
-
-                    <Link
-                      to="/learn"
-                      className="px-4 py-3 text-white hover:bg-white/10 rounded-xl text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      Learn Security
-                    </Link>
-                    <Link
-                      to="/about"
-                      className="px-4 py-3 text-white bg-white/10 rounded-xl text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Info className="w-4 h-4" />
-                      About
-                    </Link>
-                  </div>
-                )}
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="w-6 h-6" />
+                  ) : (
+                    <Menu className="w-6 h-6" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <div className="relative z-10">
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 pt-32 pb-16 max-w-6xl">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-purple-500/10 backdrop-blur-xl border border-blue-400/30 text-blue-300 px-5 py-3 rounded-full text-sm font-medium mb-8 shadow-lg shadow-blue-500/10">
-              <Award className="w-5 h-5" />
-              <span>Built for AfrihackBox Hackathon 2025</span>
-            </div>
-
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              About{" "}
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                EndPhishAI
-              </span>
-            </h1>
-
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              An advanced AI-powered phishing detection platform protecting
-              African SMEs from cyber threats through real-time analysis and
-              intelligent threat intelligence.
-            </p>
+      <div className="relative z-10 pt-28">
+        {/* Hero */}
+        <section className="container mx-auto px-4 py-16 max-w-5xl text-center">
+          <div className="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-400/30 text-yellow-300 px-5 py-2.5 rounded-full text-sm font-medium mb-8">
+            <Award className="w-4 h-4" />
+            <span>
+              Top 3 Finalist · AfriHackBox Pan-African Cybersecurity Hackathon
+            </span>
           </div>
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            The Gap Nobody
+            <br />
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              Was Filling
+            </span>
+          </h1>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
+            Every major phishing detection tool is trained on English data,
+            built for Western markets. 1.4 billion people across Africa, South
+            Asia and diaspora communities worldwide receive phishing attacks in
+            their native languages — and existing tools catch almost none of it.
+            EndPhishAI was built to fix that.
+          </p>
+        </section>
 
-          {/* Stats Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-            {stats.map((stat, index) => (
+        {/* The problem */}
+        <section className="container mx-auto px-4 py-12 max-w-5xl">
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                icon: MessageSquare,
+                title: "The SMS Problem",
+                desc: '"Thibitisha akaunti yako ya M-Pesa haraka!" — This Swahili phishing message bypasses every major security tool. Millions of East Africans receive messages like this daily.',
+                color: "from-red-500/20 to-orange-500/20",
+                border: "border-red-500/30",
+                iconColor: "text-red-400",
+              },
+              {
+                icon: AlertTriangle,
+                title: "The Bank Problem",
+                desc: "GTBank, FirstBank, Zenith, MTN and Airtel are impersonated constantly. No Western threat database has these brands in their training data.",
+                color: "from-orange-500/20 to-yellow-500/20",
+                border: "border-orange-500/30",
+                iconColor: "text-orange-400",
+              },
+              {
+                icon: Users,
+                title: "The Diaspora Problem",
+                desc: "Nigerian, Kenyan and Ghanaian immigrants in Canada, UK and US are targeted in their home languages. Canadian banks serve these communities with zero specialized protection.",
+                color: "from-yellow-500/20 to-green-500/20",
+                border: "border-yellow-500/30",
+                iconColor: "text-yellow-400",
+              },
+            ].map((item, i) => (
               <div
-                key={index}
-                className="relative group"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                key={i}
+                className={`bg-gradient-to-br ${item.color} border ${item.border} rounded-2xl p-6`}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center hover:border-blue-400/50 transition-all">
-                  <stat.icon className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-                  <div className="text-3xl font-bold text-white mb-1">
-                    {stat.value}
-                  </div>
-                  <p className="text-sm text-gray-400">{stat.label}</p>
-                </div>
+                <item.icon className={`w-8 h-8 ${item.iconColor} mb-4`} />
+                <h3 className="text-white font-bold text-lg mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-gray-300 text-sm leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Personal Story & Mission */}
-        <section className="container mx-auto px-4 py-16 max-w-6xl">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-3xl blur-2xl"></div>
-            <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-2xl rounded-3xl p-8 md:p-12 border border-white/20">
-              <div className="flex items-center justify-center gap-3 mb-6">
-                <Heart className="w-8 h-8 text-red-400" />
-                <h2 className="text-3xl md:text-4xl font-bold text-white">
-                  Why I Built This
-                </h2>
-              </div>
-              <div className="max-w-4xl mx-auto">
-                <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center mb-6">
-                  I've been a victim of phishing attacks before. I know the
-                  feeling of helplessness, the frustration, and the financial
-                  loss that comes with falling for these scams. That painful
-                  experience became my motivation.
-                </p>
-                <p className="text-gray-300 text-lg md:text-xl leading-relaxed text-center mb-8">
-                  I'm passionate about protecting others in the digital world
-                  because I understand the real impact of cybercrime. No one
-                  should go through what I went through. EndPhishAI is my way of
-                  fighting back and helping others stay safe online.
-                </p>
-
-                <div className="grid sm:grid-cols-3 gap-6 mt-8">
-                  <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-blue-400/30 transition-all group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Zap className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-2xl font-bold text-blue-400 mb-2">
-                      Simple
-                    </div>
-                    <p className="text-gray-400 text-sm">
-                      No technical knowledge required - anyone can use it
-                    </p>
-                  </div>
-                  <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-purple-400/30 transition-all group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Brain className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-2xl font-bold text-purple-400 mb-2">
-                      Intelligent
-                    </div>
-                    <p className="text-gray-400 text-sm">
-                      AI-powered with 98% accuracy across databases
-                    </p>
-                  </div>
-                  <div className="text-center p-6 bg-white/5 rounded-2xl border border-white/10 hover:border-green-400/30 transition-all group">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-xl mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Globe className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="text-2xl font-bold text-green-400 mb-2">
-                      Local
-                    </div>
-                    <p className="text-gray-400 text-sm">
-                      Built for African contexts and threat patterns
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How It Works */}
+        {/* Capabilities */}
         <section className="container mx-auto px-4 py-16 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              How It{" "}
+            <h2 className="text-4xl font-bold text-white mb-4">
+              What It Actually{" "}
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Works
+                Does
               </span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Four simple steps to complete threat protection
+            <p className="text-gray-400 text-xl max-w-2xl mx-auto">
+              Real capabilities. No marketing fluff.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {howItWorks.map((step, index) => (
-              <div key={index} className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/30 transition-all h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-5xl font-bold text-white/10">
-                      {step.step}
-                    </span>
+          <div className="grid md:grid-cols-2 gap-6">
+            {capabilities.map((c, i) => (
+              <div key={i} className="group relative">
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${c.gradient} opacity-0 group-hover:opacity-10 rounded-3xl blur-xl transition-all`}
+                />
+                <div className="relative bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-white/30 transition-all h-full">
+                  <div className="flex items-start justify-between mb-5">
                     <div
-                      className={`p-3 bg-gradient-to-br from-${step.color}-500 to-${step.color}-600 rounded-xl`}
+                      className={`inline-flex p-4 bg-gradient-to-br ${c.gradient} rounded-2xl`}
                     >
-                      <step.icon className="w-6 h-6 text-white" />
+                      <c.icon className="w-7 h-7 text-white" />
                     </div>
+                    <span className="px-3 py-1 bg-white/10 border border-white/20 rounded-full text-xs font-semibold text-white">
+                      {c.badge}
+                    </span>
                   </div>
                   <h3 className="text-xl font-bold text-white mb-3">
-                    {step.title}
+                    {c.title}
                   </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {step.description}
+                  <p className="text-gray-400 leading-relaxed text-sm">
+                    {c.description}
                   </p>
                 </div>
               </div>
@@ -408,121 +304,126 @@ export default function About() {
           </div>
         </section>
 
-        {/* Key Features */}
-        <section className="container mx-auto px-4 py-16 max-w-6xl">
+        {/* Tech Stack */}
+        <section className="container mx-auto px-4 py-16 max-w-4xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Why Choose{" "}
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Detection{" "}
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                EndPhishAI
+                Architecture
               </span>
             </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Enterprise-grade security features designed for everyone
+            <p className="text-gray-400 text-lg">
+              Every scan runs through all 7 layers simultaneously.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature, index) => (
+          <div className="space-y-3">
+            {techStack.map((layer, i) => (
               <div
-                key={index}
-                className="group relative"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                key={i}
+                className="bg-white/5 border border-white/10 rounded-2xl p-5 flex items-center justify-between hover:bg-white/10 transition-all"
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 rounded-3xl blur-xl transition-all duration-500`}
-                ></div>
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 hover:border-white/30 transition-all duration-300 h-full">
-                  <div className="flex items-start justify-between mb-6">
-                    <div
-                      className={`inline-flex p-4 bg-gradient-to-br ${feature.color} rounded-2xl group-hover:scale-110 transition-transform duration-300`}
-                    >
-                      <feature.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <span
-                      className={`px-3 py-1 bg-gradient-to-r ${feature.color} bg-opacity-20 border border-white/20 rounded-full text-sm font-semibold text-white`}
-                    >
-                      {feature.stats}
-                    </span>
+                <div className="flex items-center gap-4">
+                  <span className="text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-2 py-1 rounded-lg w-16 text-center">
+                    {layer.layer}
+                  </span>
+                  <div>
+                    <p className="text-white font-semibold">{layer.name}</p>
+                    <p className="text-gray-400 text-sm">{layer.detail}</p>
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {feature.description}
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-green-400 text-xs font-medium">
+                    {layer.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* API Section */}
+        <section className="container mx-auto px-4 py-16 max-w-4xl">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl" />
+            <div className="relative bg-white/5 border border-white/10 rounded-3xl p-10">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl">
+                  <Code className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Public API</h2>
+                  <p className="text-gray-400 text-sm">
+                    Integrate EndPhishAI into your own platform
                   </p>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Impact Section */}
-        <section className="container mx-auto px-4 py-16 max-w-6xl">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Our{" "}
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Impact
-              </span>
-            </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Making a real difference in the fight against cybercrime
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {impactStats.map((stat, index) => (
-              <div key={index} className="relative group">
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-10 rounded-2xl blur-xl group-hover:opacity-20 transition-all`}
-                ></div>
-                <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all text-center h-full">
-                  <div
-                    className={`inline-flex p-4 bg-gradient-to-br ${stat.color} rounded-2xl mb-4`}
-                  >
-                    <stat.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="text-4xl font-bold text-white mb-2">
-                    {stat.value}
-                  </div>
-                  <p className="text-gray-400">{stat.label}</p>
+              <div className="bg-black/50 rounded-2xl p-6 font-mono text-sm mb-6 overflow-x-auto">
+                <div className="text-green-400 mb-2">
+                  # Scan any URL or message
                 </div>
+                <div className="text-gray-300">
+                  <span className="text-blue-400">POST</span>{" "}
+                  https://endphishai-api.onrender.com/predict
+                </div>
+                <div className="text-gray-500 mt-3">{"{"}</div>
+                <div className="text-gray-300 ml-4">
+                  "text": "URGENT: Your MTN account suspended. Verify:
+                  http://mtn-verify.xyz"
+                </div>
+                <div className="text-gray-500">{"}"}</div>
+                <div className="text-gray-500 mt-3">{"// Response"}</div>
+                <div className="text-gray-500">{"{"}</div>
+                <div className="text-gray-300 ml-4">
+                  "final_status":{" "}
+                  <span className="text-red-400">"phishing"</span>,
+                </div>
+                <div className="text-gray-300 ml-4">
+                  "ai_score": <span className="text-yellow-400">0.95</span>,
+                </div>
+                <div className="text-gray-300 ml-4">
+                  "explanation":{" "}
+                  <span className="text-green-400">
+                    "Urgency + MTN impersonation + suspicious TLD"
+                  </span>
+                </div>
+                <div className="text-gray-500">{"}"}</div>
               </div>
-            ))}
+              <p className="text-gray-400 text-sm">
+                Free to use. No API key required for basic usage. Built for
+                developers, security teams, and businesses who want to integrate
+                phishing detection into their own products.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="container mx-auto px-4 py-20 max-w-5xl">
+        {/* CTA */}
+        <section className="container mx-auto px-4 py-20 max-w-4xl text-center">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-cyan-500/30 rounded-3xl blur-2xl"></div>
-            <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-2xl rounded-3xl p-12 md:p-16 border border-white/20 text-center">
-              <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                <Sparkles className="w-4 h-4 animate-pulse" />
-                <span>Protecting African Businesses</span>
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Ready to Stay Protected?
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-cyan-500/30 rounded-3xl blur-2xl" />
+            <div className="relative bg-gradient-to-br from-white/10 to-white/5 border border-white/20 rounded-3xl p-12">
+              <h2 className="text-4xl font-bold text-white mb-4">
+                Try It Right Now
               </h2>
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Join the fight against phishing with AI-powered protection
-                that's simple, effective, and built for Africa.
+              <p className="text-xl text-gray-300 mb-8 max-w-xl mx-auto">
+                Paste any suspicious URL, SMS, or email. Free. No account
+                needed.
               </p>
               <Link
                 to="/detect"
-                className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl font-bold text-xl transition-all duration-300 hover:scale-[1.05] shadow-2xl shadow-purple-500/50 group"
+                className="inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-2xl font-bold text-xl transition-all duration-300 hover:scale-[1.05] shadow-2xl shadow-purple-500/50"
               >
                 <Shield className="w-6 h-6" />
-                <span>Start Scanning Now</span>
-                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                <span>Start Scanning</span>
+                <ArrowRight className="w-6 h-6" />
               </Link>
             </div>
           </div>
         </section>
       </div>
 
-      {/* Footer */}
       <footer className="relative z-10 border-t border-white/10 bg-black/50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -533,12 +434,12 @@ export default function About() {
               <span className="text-white font-bold">EndPhishAI</span>
             </div>
             <p className="text-gray-400 text-sm">
-              © 2025 EndPhishAI. Built with ❤️ for AfrihackBox Hackathon.
+              © 2025 EndPhishAI · Top 3 AfriHackBox Hackathon
             </p>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <span className="text-green-400 text-sm font-medium">
-                AI Systems Active
+                All Systems Operational
               </span>
             </div>
           </div>
