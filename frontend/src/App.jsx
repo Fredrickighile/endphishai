@@ -7,7 +7,7 @@ import {
 import Home from "./Pages/Home";
 import Detect from "./Pages/Detect";
 import About from "./Pages/About";
-import Learn from "./Pages/Learn";
+import Learn from "./Pages/Threatlab";
 import ScrollToTop from "./components/ScrollToTop";
 import OfflineDetector from "./components/OfflineDetector"; // ADD THIS
 
