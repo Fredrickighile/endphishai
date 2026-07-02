@@ -63,18 +63,18 @@ class ProductionPhishingDetector:
             'zenithbank.com', 'nairaland.com', 'bellanaija.com'
         }
 
+        # IMPORTANT: These patterns must NEVER reference brand names
+        # (google, microsoft, paypal, etc). A phishing message can contain
+        # a brand name anywhere in its text/domain to impersonate it —
+        # matching on brand name presence creates a bypass for the exact
+        # attacks this tool exists to catch. Brand/domain legitimacy is
+        # judged exclusively by _fuzzy_brand_match against the actual
+        # parsed domain, never by regex against raw text.
         self.legitimate_patterns = [
             r'transaction.*(successful|completed|confirmed)',
             r'payment.*(received|sent|processed)',
             r'order.*confirmed',
             r'(reference|receipt|confirmation).*(number|code|id):\s*[A-Z0-9-]+',
-            r'(customer|help|support|contact)\.',
-            r'account\.(google|microsoft|apple|facebook)',
-            r'(login|signin|accounts)\.(google|microsoft|apple)',
-            r'noreply@',
-            r'no-reply@',
-            r'notifications@',
-            r'@.*\.(gov|edu|ac\.)'
         ]
 
         self.phishing_keywords = {
@@ -156,16 +156,45 @@ class ProductionPhishingDetector:
         if use_content_analysis and safe_analyzer and self._is_url(input_text):
             return self._detect_with_safe_content_analysis(input_text, safe_analyzer)
 
+        # FIX: Extract URLs embedded inside text messages and analyze them
+        # as URLs. "Tabbatar yanzu: http://mtn-secure.xyz/verify" contains
+        # a phishing URL that was previously ignored because the input
+        # was classified as "text" not "URL". Now we analyze both.
         heuristic_result = self._analyze_heuristics(input_text)
+
+        if not self._is_url(input_text):
+            embedded_urls = re.findall(r'https?://[^\s]+', input_text)
+            for url in embedded_urls[:3]:
+                url_heuristic = self._analyze_heuristics(url)
+                if url_heuristic['score'] > heuristic_result['score']:
+                    heuristic_result['score'] = url_heuristic['score']
+                    heuristic_result['reasons'] = url_heuristic['reasons'] + [
+                        r for r in heuristic_result['reasons']
+                        if r != 'No suspicious patterns detected'
+                    ]
+
         ml_score = self._analyze_ml(input_text) if self.ml_available else None
 
         nlp_result = None
         if NLP_AI_AVAILABLE and not self._is_url(input_text):
             nlp_result = analyze_text_with_nlp_ai(input_text)
-            if nlp_result['nlp_score'] > 0.5:
+            # FIX: NLP found 8 phishing indicators at 0.57 but the old
+            # code only added 0.57*0.3=0.171 boost — not enough to cross
+            # any threshold. Now: if NLP finds 3+ indicators at >=0.50,
+            # it takes the MAX of heuristic vs NLP score directly,
+            # rather than a tiny additive boost that gets averaged away.
+            if nlp_result['nlp_score'] >= 0.50 and len(nlp_result.get('indicators', [])) >= 3:
+                heuristic_result['score'] = max(
+                    heuristic_result['score'],
+                    nlp_result['nlp_score']
+                )
+                heuristic_result['reasons'].extend(
+                    [i for i in nlp_result['indicators'][:3]
+                     if i not in heuristic_result['reasons']]
+                )
+            elif nlp_result['nlp_score'] > 0.3:
                 boost = nlp_result['nlp_score'] * 0.3
                 heuristic_result['score'] = min(heuristic_result['score'] + boost, 1.0)
-                heuristic_result['reasons'].extend(nlp_result['indicators'][:3])
 
         return self._combine_scores(heuristic_result, ml_score, input_text, nlp_result)
 
@@ -330,23 +359,34 @@ class ProductionPhishingDetector:
         return False
 
     def _check_legitimate_context(self, text):
+        """
+        Judges ONLY structural transaction legitimacy (reference numbers,
+        confirmed amounts). Never judges brand/sender legitimacy — that
+        is the job of _fuzzy_brand_match against the parsed domain.
+        Requires real evidence (a reference AND an amount, or two
+        independent structural patterns) — a single soft keyword match
+        is not sufficient to mark a message safe.
+        """
         text_lower = text.lower()
         legitimacy_score = 0.0
         reasons = []
+        pattern_hits = 0
 
         for pattern in self.legitimate_patterns:
             if re.search(pattern, text_lower):
-                legitimacy_score += 0.25
-                reasons.append("Legitimate pattern detected")
-                if legitimacy_score >= 0.50:
-                    break
+                pattern_hits += 1
+                reasons.append("Legitimate transaction pattern detected")
 
         has_ref = bool(re.search(r'(reference|receipt|transaction|order).*[A-Z0-9]{6,}', text_lower))
         has_amount = bool(re.search(r'(amount|total|paid).*[$€£¥₦₹]\s*[\d,]+', text_lower))
 
         if has_ref and has_amount:
-            legitimacy_score += 0.40
-            reasons.append("Valid transaction structure")
+            legitimacy_score = 0.60
+            reasons.append("Valid transaction structure (reference + amount)")
+        elif pattern_hits >= 2:
+            legitimacy_score = 0.55
+        elif pattern_hits == 1 and has_ref:
+            legitimacy_score = 0.55
 
         is_legitimate = legitimacy_score >= 0.50
         return is_legitimate, legitimacy_score, reasons
