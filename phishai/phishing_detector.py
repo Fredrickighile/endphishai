@@ -156,10 +156,6 @@ class ProductionPhishingDetector:
         if use_content_analysis and safe_analyzer and self._is_url(input_text):
             return self._detect_with_safe_content_analysis(input_text, safe_analyzer)
 
-        # FIX: Extract URLs embedded inside text messages and analyze them
-        # as URLs. "Tabbatar yanzu: http://mtn-secure.xyz/verify" contains
-        # a phishing URL that was previously ignored because the input
-        # was classified as "text" not "URL". Now we analyze both.
         heuristic_result = self._analyze_heuristics(input_text)
 
         if not self._is_url(input_text):
@@ -178,11 +174,6 @@ class ProductionPhishingDetector:
         nlp_result = None
         if NLP_AI_AVAILABLE and not self._is_url(input_text):
             nlp_result = analyze_text_with_nlp_ai(input_text)
-            # FIX: NLP found 8 phishing indicators at 0.57 but the old
-            # code only added 0.57*0.3=0.171 boost — not enough to cross
-            # any threshold. Now: if NLP finds 3+ indicators at >=0.50,
-            # it takes the MAX of heuristic vs NLP score directly,
-            # rather than a tiny additive boost that gets averaged away.
             if nlp_result['nlp_score'] >= 0.50 and len(nlp_result.get('indicators', [])) >= 3:
                 heuristic_result['score'] = max(
                     heuristic_result['score'],
@@ -414,10 +405,39 @@ class ProductionPhishingDetector:
                     reasons.append(f"Suspicious domain extension ({tld})")
                     break
 
+            # ── REGISTRABLE DOMAIN EXTRACTION ────────────────────────────────
+            # For accounts.google.com.security-alert.net, the registrable
+            # domain is security-alert.net — the actual owner of the URL.
+            # _fuzzy_brand_match on the full netloc sees "accounts" as the
+            # first part and misses the attack entirely.
+            # We now check BOTH the full domain AND the registrable domain.
+            domain_parts = domain.split('.')
+            if len(domain_parts) >= 2:
+                registrable_domain = '.'.join(domain_parts[-2:])
+            else:
+                registrable_domain = domain
+
+            # Check full domain for typosquats
             is_typosquat, brand, similarity = self._fuzzy_brand_match(domain)
             if is_typosquat:
                 score += 0.65
                 reasons.append(f"Potential {brand.upper()} impersonation (typosquat/homoglyph)")
+
+            # CRITICAL: Check if a brand name appears as a subdomain of a
+            # non-brand registrable domain — the classic subdomain spoofing
+            # attack (accounts.google.com.security-alert.net)
+            if not is_typosquat and registrable_domain != domain:
+                for brand_name in self.major_brands:
+                    if brand_name in domain and not domain.endswith(f"{brand_name}.com") \
+                            and not domain.endswith(f"{brand_name}.ng") \
+                            and not domain.endswith(f"{brand_name}.co.ke") \
+                            and not domain.endswith(f"{brand_name}.com.ng"):
+                        score += 0.75
+                        reasons.append(
+                            f"{brand_name.upper()} used as subdomain to deceive "
+                            f"(real domain: {registrable_domain})"
+                        )
+                        break
 
             subdomain_count = domain.count('.') - 1
             if subdomain_count > 3:
