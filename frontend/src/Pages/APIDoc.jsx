@@ -10,11 +10,6 @@ import {
   Shield,
   Zap,
   Lock,
-  BookOpen,
-  Scan,
-  Info,
-  Menu,
-  X,
   ChevronDown,
   ChevronUp,
   Terminal,
@@ -64,7 +59,10 @@ function LiveDemo() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
+  const [lastRun, setLastRun] = useState(0);
   const run = async () => {
+    if (Date.now() - lastRun < 3000) return; // 3 second cooldown
+    setLastRun(Date.now());
     if (!input.trim()) return;
     setLoading(true);
     setResult(null);
@@ -532,10 +530,10 @@ const result = await response.json();
                 Try the Scanner
               </Link>
               <a
-                href="mailto:fredrick.ighile.dev@gmail.com"
+                href="https://github.com/Fredrickighile/endphishai"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-xl font-semibold transition-all"
               >
-                Contact for Enterprise
+                View on GitHub
               </a>
             </div>
           </div>
