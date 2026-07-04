@@ -21,8 +21,7 @@ from phishing_detector import detect_phishing
 app = Flask(__name__)
 CORS(app, origins=[
     "https://endphishai.vercel.app",
-    "http://localhost:3000",
-    "http://localhost:5173"
+    
 ])
 
 # API Configuration
