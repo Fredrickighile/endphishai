@@ -262,6 +262,7 @@ const CHALLENGES = [
     teach:
       "This is vishing (voice phishing) via SMS — social engineering with no URL. IT departments NEVER ask for credentials via SMS. Always verify via official company channels.",
     category: "Social Engineering",
+    noAutoDetect: true,
   },
   {
     id: 18,
@@ -422,7 +423,7 @@ export default function Learn() {
   const [timeLeft, setTimeLeft] = useState(30);
   const [timerActive, setTimerActive] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [, setHintsUsed] = useState(0);
 
   // Build challenge set based on filter
   const buildChallenges = useCallback((f) => {
@@ -444,6 +445,7 @@ export default function Learn() {
     if (timeLeft === 0 && timerActive && answered === null) {
       handleAnswer("timeout");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, timerActive, answered]);
 
   const startLab = (f) => {
@@ -492,7 +494,7 @@ export default function Learn() {
     setScanning(false);
   };
 
-  const handleAnswer = async (userAnswer) => {
+  const handleAnswer = useCallback(async (userAnswer) => {
     if (answered !== null) return;
     const ch = challenges[current];
     setTimerActive(false);
@@ -525,7 +527,8 @@ export default function Learn() {
 
     // Scan with real API for educational verdict
     await scanWithAPI(ch);
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [score, streak, bestStreak, challenges, current, showHint, timeLeft, answered]);
 
   const nextChallenge = () => {
     if (current >= challenges.length - 1) {
@@ -549,7 +552,7 @@ export default function Learn() {
         )
       : 0;
   const threatIQ = calcThreatIQ(score, challenges.length * 50, accuracy);
-  const iqLabel = getThreatIQLabel(threatIQ);
+  const _iqLabel = getThreatIQLabel(threatIQ);
 
   // ── LANDING ──────────────────────────────────────────────────────────────
   if (screen === "landing")
@@ -667,7 +670,7 @@ export default function Learn() {
                 icon: Crosshair,
                 desc: "Nation-state techniques, social engineering, zero-day patterns",
               },
-            ].map(({ key, icon: Icon, desc }) => {
+            ].map(({ key, icon: CfgIcon, desc }) => { // eslint-disable-line no-unused-vars
               const cfg = DIFFICULTY_CONFIG[key];
               return (
                 <button
@@ -676,7 +679,7 @@ export default function Learn() {
                   className={`group relative text-left p-6 rounded-2xl border-2 ${cfg.border} ${cfg.bg} hover:scale-[1.03] transition-all`}
                 >
                   <div className="flex items-center justify-between mb-3">
-                    <Icon className={`w-6 h-6 ${cfg.color}`} />
+                    <CfgIcon className={`w-6 h-6 ${cfg.color}`} />
                     <span
                       className={`text-xs font-bold px-2 py-1 rounded-full ${cfg.bg} ${cfg.color} border ${cfg.border}`}
                     >
@@ -904,7 +907,7 @@ export default function Learn() {
   const diffCfg = DIFFICULTY_CONFIG[ch.difficulty];
   const correct =
     answered !== null && answered !== "timeout" && answered === ch.verdict;
-  const wrong =
+  const _wrong =
     answered !== null && (answered === "timeout" || answered !== ch.verdict);
 
   return (
@@ -1056,7 +1059,22 @@ export default function Learn() {
             </div>
 
             {/* AI verdict */}
-            {scanning ? (
+            {ch.noAutoDetect ? (
+              answered !== null && (
+                <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-xl p-4">
+                  <p className="text-yellow-300 text-sm font-semibold mb-1">
+                    ⚠ Automated Detection Limit
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    This attack has no URL or suspicious domain — automated
+                    tools cannot detect social engineering. Human judgment is
+                    required. This is a known limitation of all automated
+                    security tools including VirusTotal and Google Safe
+                    Browsing.
+                  </p>
+                </div>
+              )
+            ) : scanning ? (
               <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
                 <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
                 <span className="text-blue-300 text-sm">
