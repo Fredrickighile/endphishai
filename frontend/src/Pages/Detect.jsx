@@ -1,5 +1,6 @@
 // Detect.jsx - CLEAN VERSION
 import { useState, useRef } from "react";
+import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import { ThreatBanner } from "../components/threatbanner";
 import { ProtectionLayers } from "../components/protectionLayer";
@@ -41,7 +42,6 @@ export default function Detect() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [scanProgress, setScanProgress] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scanMode, setScanMode] = useState("url");
   const [selectedFile, setSelectedFile] = useState(null);
   // const [filePreview, setFilePreview] = useState("");
@@ -352,116 +352,7 @@ export default function Detect() {
         ></div>
       </div>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl"></div>
-            <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl">
-              <div className="px-4 sm:px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <Link to="/" className="flex items-center gap-2 sm:gap-3">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75"></div>
-                      <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
-                        <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                      </div>
-                    </div>
-                    <div>
-                      <span className="text-white font-bold text-lg sm:text-xl tracking-tight">
-                        EndPhishAI
-                      </span>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-green-400 text-xs font-medium">
-                          AI Active
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <div className="hidden lg:flex items-center gap-1">
-                    <Link
-                      to="/"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium"
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/detect"
-                      className="px-4 py-2 text-white bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <Scan className="w-4 h-4" />
-                      Detect
-                    </Link>
-                    <Link
-                      to="/learn"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      Learn
-                    </Link>
-                    <Link
-                      to="/about"
-                      className="px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                    >
-                      <Info className="w-4 h-4" />
-                      About
-                    </Link>
-                  </div>
-
-                  <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl transition-all"
-                    aria-label="Toggle menu"
-                  >
-                    {mobileMenuOpen ? (
-                      <X className="w-6 h-6" />
-                    ) : (
-                      <Menu className="w-6 h-6" />
-                    )}
-                  </button>
-                </div>
-
-                {mobileMenuOpen && (
-                  <div className="lg:hidden mt-4 pt-4 border-t border-white/10 space-y-2 animate-slide-down">
-                    <Link
-                      to="/"
-                      className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Home
-                    </Link>
-                    <Link
-                      to="/detect"
-                      className="px-4 py-3 text-white bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Scan className="w-4 h-4" />
-                      Detect Threats
-                    </Link>
-                    <Link
-                      to="/learn"
-                      className="px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <BookOpen className="w-4 h-4" />
-                      Learn Security
-                    </Link>
-                    <Link
-                      to="/about"
-                      className="px-4 py-3 text-white hover:bg-white/10 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Info className="w-4 h-4" />
-                      About
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Backend Status Indicator */}
       <BackendStatus backendStatus={backendStatus} />

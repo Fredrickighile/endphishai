@@ -1,4 +1,5 @@
-import { useState } from "react";
+// import { useEffect } from "react";
+import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import {
   Shield,
@@ -24,8 +25,6 @@ import {
 } from "lucide-react";
 
 export default function About() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const capabilities = [
     {
       icon: Brain,
@@ -121,76 +120,7 @@ export default function About() {
       </div>
 
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl" />
-            <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl px-6 py-3">
-              <div className="flex items-center justify-between">
-                <Link to="/" className="flex items-center gap-3">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75" />
-                    <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
-                      <Brain className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-white font-bold text-xl">
-                      EndPhishAI
-                    </span>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse" />
-                      <span className="text-green-400 text-xs font-medium">
-                        AI Active
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-                <div className="hidden lg:flex items-center gap-1">
-                  {[
-                    { to: "/", label: "Home" },
-                    {
-                      to: "/detect",
-                      label: "Detect",
-                      icon: <Scan className="w-4 h-4" />,
-                    },
-                    {
-                      to: "/learn",
-                      label: "Learn",
-                      icon: <BookOpen className="w-4 h-4" />,
-                    },
-                    {
-                      to: "/about",
-                      label: "About",
-                      icon: <Info className="w-4 h-4" />,
-                      active: true,
-                    },
-                  ].map((l) => (
-                    <Link
-                      key={l.to}
-                      to={l.to}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${l.active ? "text-white bg-white/10" : "text-gray-300 hover:text-white hover:bg-white/10"}`}
-                    >
-                      {l.icon}
-                      {l.label}
-                    </Link>
-                  ))}
-                </div>
-                <button
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl"
-                >
-                  {mobileMenuOpen ? (
-                    <X className="w-6 h-6" />
-                  ) : (
-                    <Menu className="w-6 h-6" />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <div className="relative z-10 pt-28">
         {/* Hero */}

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import Navbar from "../components/Navbar";
 import { Link } from "react-router-dom";
 import {
   Shield,
@@ -331,81 +332,6 @@ function getThreatIQLabel(iq) {
 }
 
 // ─── NAV ───────────────────────────────────────────────────────────────────
-function Nav() {
-  const [open, setOpen] = useState(false);
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl" />
-          <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl px-6 py-3">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75" />
-                  <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-                <div>
-                  <span className="text-white font-bold text-xl">
-                    EndPhishAI
-                  </span>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-green-400 text-xs font-medium">
-                      AI Active
-                    </span>
-                  </div>
-                </div>
-              </Link>
-              <div className="hidden lg:flex items-center gap-1">
-                {[
-                  { to: "/", label: "Home" },
-                  {
-                    to: "/detect",
-                    label: "Detect",
-                    icon: <Scan className="w-4 h-4" />,
-                  },
-                  {
-                    to: "/learn",
-                    label: "Threat Lab",
-                    icon: <BookOpen className="w-4 h-4" />,
-                    active: true,
-                  },
-                  {
-                    to: "/about",
-                    label: "About",
-                    icon: <Info className="w-4 h-4" />,
-                  },
-                ].map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all ${l.active ? "text-white bg-white/10" : "text-gray-300 hover:text-white hover:bg-white/10"}`}
-                  >
-                    {l.icon}
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
-              <button
-                onClick={() => setOpen(!open)}
-                className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl"
-              >
-                {open ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 // ─── MAIN ──────────────────────────────────────────────────────────────────
 export default function Learn() {
@@ -445,8 +371,7 @@ export default function Learn() {
     if (timeLeft === 0 && timerActive && answered === null) {
       handleAnswer("timeout");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeLeft, timerActive, answered]);
+  }, [timeLeft, timerActive, answered]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const startLab = (f) => {
     setFilter(f);
@@ -494,41 +419,43 @@ export default function Learn() {
     setScanning(false);
   };
 
-  const handleAnswer = useCallback(async (userAnswer) => {
-    if (answered !== null) return;
-    const ch = challenges[current];
-    setTimerActive(false);
-    setAnswered(userAnswer);
+  const handleAnswer = useCallback(
+    async (userAnswer) => {
+      if (answered !== null) return;
+      const ch = challenges[current];
+      setTimerActive(false);
+      setAnswered(userAnswer);
 
-    const correct =
-      userAnswer === ch.verdict || userAnswer === "timeout"
-        ? false
-        : userAnswer === ch.verdict;
-    const diff = DIFFICULTY_CONFIG[ch.difficulty];
-    const timeBonus = timeLeft > 20 ? 5 : timeLeft > 10 ? 2 : 0;
-    const hintPenalty = showHint ? 5 : 0;
-    const pts = correct ? diff.points + timeBonus - hintPenalty : 0;
+      const correct =
+        userAnswer === ch.verdict || userAnswer === "timeout"
+          ? false
+          : userAnswer === ch.verdict;
+      const diff = DIFFICULTY_CONFIG[ch.difficulty];
+      const timeBonus = timeLeft > 20 ? 5 : timeLeft > 10 ? 2 : 0;
+      const hintPenalty = showHint ? 5 : 0;
+      const pts = correct ? diff.points + timeBonus - hintPenalty : 0;
 
-    const newStreak = correct ? streak + 1 : 0;
-    const newBest = Math.max(bestStreak, newStreak);
-    setScore((s) => s + pts);
-    setStreak(newStreak);
-    setBestStreak(newBest);
-    setHistory((h) => [
-      ...h,
-      {
-        challenge: ch,
-        userAnswer,
-        correct,
-        points: pts,
-        timeUsed: 30 - timeLeft,
-      },
-    ]);
+      const newStreak = correct ? streak + 1 : 0;
+      const newBest = Math.max(bestStreak, newStreak);
+      setScore((s) => s + pts);
+      setStreak(newStreak);
+      setBestStreak(newBest);
+      setHistory((h) => [
+        ...h,
+        {
+          challenge: ch,
+          userAnswer,
+          correct,
+          points: pts,
+          timeUsed: 30 - timeLeft,
+        },
+      ]);
 
-    // Scan with real API for educational verdict
-    await scanWithAPI(ch);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [score, streak, bestStreak, challenges, current, showHint, timeLeft, answered]);
+      // Scan with real API for educational verdict
+      await scanWithAPI(ch);
+    },
+    [streak, bestStreak, challenges, current, showHint, timeLeft, answered],
+  );
 
   const nextChallenge = () => {
     if (current >= challenges.length - 1) {
@@ -565,7 +492,7 @@ export default function Learn() {
             style={{ animationDelay: "1s" }}
           />
         </div>
-        <Nav />
+        <Navbar />
         <div className="relative z-10 container mx-auto px-4 pt-32 pb-20 max-w-5xl">
           {/* Hero */}
           <div className="text-center mb-16">
@@ -670,7 +597,8 @@ export default function Learn() {
                 icon: Crosshair,
                 desc: "Nation-state techniques, social engineering, zero-day patterns",
               },
-            ].map(({ key, icon: CfgIcon, desc }) => { // eslint-disable-line no-unused-vars
+              // eslint-disable-next-line no-unused-vars
+            ].map(({ key, icon: CfgIcon, desc }) => {
               const cfg = DIFFICULTY_CONFIG[key];
               return (
                 <button
@@ -764,7 +692,7 @@ export default function Learn() {
           <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-yellow-600/20 rounded-full blur-3xl animate-pulse" />
           <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
         </div>
-        <Nav />
+        <Navbar />
         <div className="relative z-10 container mx-auto px-4 pt-32 pb-20 max-w-3xl">
           <div className="text-center mb-10">
             <div className="inline-flex p-6 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl mb-6 animate-bounce">
@@ -916,7 +844,7 @@ export default function Learn() {
         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-3xl" />
       </div>
-      <Nav />
+      <Navbar />
 
       <div className="relative z-10 container mx-auto px-4 pt-28 pb-20 max-w-3xl">
         {/* Header bar */}

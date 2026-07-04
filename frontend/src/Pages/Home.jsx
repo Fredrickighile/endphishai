@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import LiveThreatDemo from "../components/LiveThreatDemo";
+import Navbar from "../components/Navbar";
 import {
   Shield,
   Brain,
@@ -22,95 +23,6 @@ import {
   Code,
   MessageSquare,
 } from "lucide-react";
-
-const NAV = () => {
-  const [open, setOpen] = useState(false);
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 rounded-2xl blur-xl" />
-          <div className="relative bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl px-6 py-3">
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-75" />
-                  <div className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-xl">
-                    <Brain className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-                <div>
-                  <span className="text-white font-bold text-xl tracking-tight">
-                    EndPhishAI
-                  </span>
-                  <div className="flex items-center gap-1 mt-0.5">
-                    <div className="w-1 h-1 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-green-400 text-xs font-medium">
-                      AI Active
-                    </span>
-                  </div>
-                </div>
-              </Link>
-              <div className="hidden lg:flex items-center gap-1">
-                {[
-                  { to: "/", label: "Home", active: true },
-                  {
-                    to: "/detect",
-                    label: "Detect",
-                    icon: <Scan className="w-4 h-4" />,
-                  },
-                  {
-                    to: "/learn",
-                    label: "Learn",
-                    icon: <BookOpen className="w-4 h-4" />,
-                  },
-                  {
-                    to: "/about",
-                    label: "About",
-                    icon: <Info className="w-4 h-4" />,
-                  },
-                ].map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    className={`px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium flex items-center gap-2 ${l.active ? "text-white bg-white/10" : "text-gray-300 hover:text-white hover:bg-white/10"}`}
-                  >
-                    {l.icon}
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
-              <button
-                onClick={() => setOpen(!open)}
-                className="lg:hidden text-white p-2 hover:bg-white/10 rounded-xl"
-              >
-                {open ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-            {open && (
-              <div className="lg:hidden mt-4 pt-4 border-t border-white/10 space-y-2">
-                {["/", "/detect", "/learn", "/about"].map((to, i) => (
-                  <Link
-                    key={to}
-                    to={to}
-                    onClick={() => setOpen(false)}
-                    className="block px-4 py-3 text-white hover:bg-white/10 rounded-xl text-sm font-medium"
-                  >
-                    {["Home", "Detect", "Learn", "About"][i]}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </nav>
-  );
-};
 
 export default function Home() {
   const [, setScanCount] = useState(0);
@@ -180,7 +92,7 @@ export default function Home() {
         />
       </div>
 
-      <NAV />
+      <Navbar />
 
       <div className="relative z-10">
         {/* Hero */}
