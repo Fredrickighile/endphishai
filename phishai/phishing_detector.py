@@ -157,35 +157,15 @@ class ProductionPhishingDetector:
             return self._detect_with_safe_content_analysis(input_text, safe_analyzer)
 
         heuristic_result = self._analyze_heuristics(input_text)
-
-        if not self._is_url(input_text):
-            embedded_urls = re.findall(r'https?://[^\s]+', input_text)
-            for url in embedded_urls[:3]:
-                url_heuristic = self._analyze_heuristics(url)
-                if url_heuristic['score'] > heuristic_result['score']:
-                    heuristic_result['score'] = url_heuristic['score']
-                    heuristic_result['reasons'] = url_heuristic['reasons'] + [
-                        r for r in heuristic_result['reasons']
-                        if r != 'No suspicious patterns detected'
-                    ]
-
         ml_score = self._analyze_ml(input_text) if self.ml_available else None
 
         nlp_result = None
         if NLP_AI_AVAILABLE and not self._is_url(input_text):
             nlp_result = analyze_text_with_nlp_ai(input_text)
-            if nlp_result['nlp_score'] >= 0.50 and len(nlp_result.get('indicators', [])) >= 3:
-                heuristic_result['score'] = max(
-                    heuristic_result['score'],
-                    nlp_result['nlp_score']
-                )
-                heuristic_result['reasons'].extend(
-                    [i for i in nlp_result['indicators'][:3]
-                     if i not in heuristic_result['reasons']]
-                )
-            elif nlp_result['nlp_score'] > 0.3:
+            if nlp_result['nlp_score'] > 0.5:
                 boost = nlp_result['nlp_score'] * 0.3
                 heuristic_result['score'] = min(heuristic_result['score'] + boost, 1.0)
+                heuristic_result['reasons'].extend(nlp_result['indicators'][:3])
 
         return self._combine_scores(heuristic_result, ml_score, input_text, nlp_result)
 
@@ -405,39 +385,10 @@ class ProductionPhishingDetector:
                     reasons.append(f"Suspicious domain extension ({tld})")
                     break
 
-            # ── REGISTRABLE DOMAIN EXTRACTION ────────────────────────────────
-            # For accounts.google.com.security-alert.net, the registrable
-            # domain is security-alert.net — the actual owner of the URL.
-            # _fuzzy_brand_match on the full netloc sees "accounts" as the
-            # first part and misses the attack entirely.
-            # We now check BOTH the full domain AND the registrable domain.
-            domain_parts = domain.split('.')
-            if len(domain_parts) >= 2:
-                registrable_domain = '.'.join(domain_parts[-2:])
-            else:
-                registrable_domain = domain
-
-            # Check full domain for typosquats
             is_typosquat, brand, similarity = self._fuzzy_brand_match(domain)
             if is_typosquat:
                 score += 0.65
                 reasons.append(f"Potential {brand.upper()} impersonation (typosquat/homoglyph)")
-
-            # CRITICAL: Check if a brand name appears as a subdomain of a
-            # non-brand registrable domain — the classic subdomain spoofing
-            # attack (accounts.google.com.security-alert.net)
-            if not is_typosquat and registrable_domain != domain:
-                for brand_name in self.major_brands:
-                    if brand_name in domain and not domain.endswith(f"{brand_name}.com") \
-                            and not domain.endswith(f"{brand_name}.ng") \
-                            and not domain.endswith(f"{brand_name}.co.ke") \
-                            and not domain.endswith(f"{brand_name}.com.ng"):
-                        score += 0.75
-                        reasons.append(
-                            f"{brand_name.upper()} used as subdomain to deceive "
-                            f"(real domain: {registrable_domain})"
-                        )
-                        break
 
             subdomain_count = domain.count('.') - 1
             if subdomain_count > 3:
@@ -498,7 +449,8 @@ class ProductionPhishingDetector:
             combined = hstack([text_vec, features_scaled])
             proba = self.model.predict_proba(combined)[0]
             return float(proba[1]) if len(proba) > 1 else float(proba[0])
-        except:
+        except Exception as e:
+            print(f"ML prediction error: {e}")
             return None
 
     def _combine_scores(self, heuristic_result, ml_score, text, nlp_result=None):
