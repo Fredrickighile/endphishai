@@ -21,7 +21,8 @@ from phishing_detector import detect_phishing
 app = Flask(__name__)
 CORS(app, origins=[
     "https://endphishai.vercel.app",
-    
+    "http://localhost:3000",
+    "http://localhost:5173"
 ])
 
 # API Configuration
@@ -617,11 +618,12 @@ def _sanitize_output(text):
 @app.route("/")
 def home():
     """Health check endpoint"""
+    from phishing_detector import detector
     return jsonify({
         "status": "running",
         "service": "PhishAI Detection Service",
         "version": "5.0",
-        "ml_available": True,
+        "ml_available": detector.ml_available,
         "file_upload_available": True,
         "sms_available": SMS_AVAILABLE,
         "content_analysis_available": True,

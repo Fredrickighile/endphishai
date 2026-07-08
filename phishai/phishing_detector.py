@@ -4,6 +4,7 @@ Integrates ML, Heuristics, and NLP AI for comprehensive threat detection
 """
 
 import re
+import sys
 from urllib.parse import urlparse
 import joblib
 from pathlib import Path
@@ -14,10 +15,10 @@ from difflib import SequenceMatcher
 try:
     from nlp_ai_analyzer import analyze_text_with_nlp_ai
     NLP_AI_AVAILABLE = True
-    print("NLP AI Module: Loaded successfully")
+    print("NLP AI Module: Loaded successfully", flush=True)
 except ImportError:
     NLP_AI_AVAILABLE = False
-    print("NLP AI Module: Not available - using standard detection only")
+    print("NLP AI Module: Not available - using standard detection only", flush=True)
 
 
 class ProductionPhishingDetector:
@@ -63,13 +64,9 @@ class ProductionPhishingDetector:
             'zenithbank.com', 'nairaland.com', 'bellanaija.com'
         }
 
-        # IMPORTANT: These patterns must NEVER reference brand names
-        # (google, microsoft, paypal, etc). A phishing message can contain
-        # a brand name anywhere in its text/domain to impersonate it —
-        # matching on brand name presence creates a bypass for the exact
-        # attacks this tool exists to catch. Brand/domain legitimacy is
-        # judged exclusively by _fuzzy_brand_match against the actual
-        # parsed domain, never by regex against raw text.
+        # IMPORTANT: These patterns must NEVER reference brand names.
+        # Brand/domain legitimacy is judged exclusively by _fuzzy_brand_match
+        # against the actual parsed domain, never by regex against raw text.
         self.legitimate_patterns = [
             r'transaction.*(successful|completed|confirmed)',
             r'payment.*(received|sent|processed)',
@@ -107,7 +104,6 @@ class ProductionPhishingDetector:
             'sounds good', 'okay', 'sure', 'thanks', 'thank you'
         }
 
-        # Homoglyph map — characters attackers swap to fool the eye
         self.HOMOGLYPHS = {
             '0': 'o', '1': 'l', '3': 'e', '4': 'a', '5': 's',
             '6': 'g', '7': 't', '8': 'b', '@': 'a',
@@ -125,12 +121,12 @@ class ProductionPhishingDetector:
                 self.vectorizer = joblib.load(vectorizer_path)
                 self.scaler = joblib.load(scaler_path)
                 self.ml_available = True
-                print("ML Model: Loaded successfully")
+                print("ML Model: Loaded successfully", flush=True)
             except Exception as e:
-                print(f"ML Model: Loading error - {e}")
+                print(f"ML Model: Loading error - {e}", flush=True)
                 self.ml_available = False
         else:
-            print("ML Model: Not found - using heuristics only")
+            print(f"ML Model: Not found at {self.model_dir} - using heuristics only", flush=True)
             self.ml_available = False
 
     def detect_phishing(self, input_text, use_content_analysis=False, safe_analyzer=None):
@@ -156,16 +152,46 @@ class ProductionPhishingDetector:
         if use_content_analysis and safe_analyzer and self._is_url(input_text):
             return self._detect_with_safe_content_analysis(input_text, safe_analyzer)
 
+        # ── FIX: Extract URLs embedded inside SMS/email text ──────────────
+        # "Tabbatar yanzu: http://mtn-secure.xyz/verify" contains a phishing
+        # URL that must be analyzed as a URL, not ignored as plain text.
         heuristic_result = self._analyze_heuristics(input_text)
+
+        if not self._is_url(input_text):
+            embedded_urls = re.findall(r'https?://[^\s]+', input_text)
+            for url in embedded_urls[:3]:
+                url_heuristic = self._analyze_heuristics(url)
+                if url_heuristic['score'] > heuristic_result['score']:
+                    heuristic_result['score'] = url_heuristic['score']
+                    heuristic_result['reasons'] = url_heuristic['reasons'] + [
+                        r for r in heuristic_result['reasons']
+                        if r != 'No suspicious patterns detected'
+                    ]
+            # Clean placeholder reason if we found real signals
+            if heuristic_result['score'] > 0.1:
+                heuristic_result['reasons'] = [
+                    r for r in heuristic_result['reasons']
+                    if r != 'No suspicious patterns detected'
+                ] or heuristic_result['reasons']
+
         ml_score = self._analyze_ml(input_text) if self.ml_available else None
 
         nlp_result = None
         if NLP_AI_AVAILABLE and not self._is_url(input_text):
             nlp_result = analyze_text_with_nlp_ai(input_text)
-            if nlp_result['nlp_score'] > 0.5:
+            # FIX: NLP with 3+ strong indicators overrides weak heuristic score
+            if nlp_result['nlp_score'] >= 0.50 and len(nlp_result.get('indicators', [])) >= 3:
+                heuristic_result['score'] = max(
+                    heuristic_result['score'],
+                    nlp_result['nlp_score']
+                )
+                heuristic_result['reasons'].extend(
+                    [i for i in nlp_result['indicators'][:3]
+                     if i not in heuristic_result['reasons']]
+                )
+            elif nlp_result['nlp_score'] > 0.3:
                 boost = nlp_result['nlp_score'] * 0.3
                 heuristic_result['score'] = min(heuristic_result['score'] + boost, 1.0)
-                heuristic_result['reasons'].extend(nlp_result['indicators'][:3])
 
         return self._combine_scores(heuristic_result, ml_score, input_text, nlp_result)
 
@@ -239,55 +265,38 @@ class ProductionPhishingDetector:
             return standard_result
 
     def _normalize_homoglyphs(self, text):
-        """Replace homoglyphs with their real characters"""
         result = text
         for fake, real in self.HOMOGLYPHS.items():
             result = result.replace(fake, real)
         return result
 
     def _fuzzy_brand_match(self, domain):
-        """
-        Detect typosquatting and homoglyph attacks.
-        Catches: paypa1.com, g00gle.com, arnazon.com, rn-impersonation
-        """
         domain_clean = re.sub(r'[^a-z0-9.-]', '', domain.lower())
         domain_clean = re.sub(r'^www\.', '', domain_clean)
         domain_parts = domain_clean.split('.')
         domain_name = domain_parts[0] if domain_parts else domain_clean
-
-        # Normalize homoglyphs for comparison
         domain_normalized = self._normalize_homoglyphs(domain_name)
 
         for brand in self.major_brands:
             brand_clean = brand.lower()
 
-            # ── EXACT LEGITIMATE MATCH — always safe ──────────────
             if (domain_clean == f"{brand_clean}.com" or
                     domain_clean == f"{brand_clean}.ng" or
                     domain_clean == f"{brand_clean}.co.uk" or
                     domain_clean == f"{brand_clean}.com.ng"):
                 return False, brand_clean, 1.0
 
-            # ── HOMOGLYPH ATTACK ──────────────────────────────────
-            # paypa1.com → paypal, g00gle.com → google
             if domain_normalized == brand_clean and domain_name != brand_clean:
                 return True, brand_clean, 0.98
 
-            # ── HYPHEN IMPERSONATION ──────────────────────────────
-            # paypal-secure.xyz, mtn-verify.tk
-            if (f"{brand_clean}-" in domain_clean or
-                    f"-{brand_clean}" in domain_clean):
+            if (f"{brand_clean}-" in domain_clean or f"-{brand_clean}" in domain_clean):
                 if not domain_clean.endswith(f"{brand_clean}.com"):
                     return True, brand_clean, 0.95
 
-            # ── SUBDOMAIN IMPERSONATION ───────────────────────────
-            # paypal.fake-site.com
             if domain_clean.startswith(f"{brand_clean}."):
                 if domain_clean != f"{brand_clean}.com":
                     return True, brand_clean, 0.90
 
-            # ── FUZZY MATCH (lowered threshold to catch more) ─────
-            # arnazon, micosoft, gooogle
             similarity = SequenceMatcher(None, brand_clean, domain_name).ratio()
             if 0.80 <= similarity < 1.0 and len(brand_clean) > 4:
                 if domain_name != brand_clean:
@@ -330,14 +339,6 @@ class ProductionPhishingDetector:
         return False
 
     def _check_legitimate_context(self, text):
-        """
-        Judges ONLY structural transaction legitimacy (reference numbers,
-        confirmed amounts). Never judges brand/sender legitimacy — that
-        is the job of _fuzzy_brand_match against the parsed domain.
-        Requires real evidence (a reference AND an amount, or two
-        independent structural patterns) — a single soft keyword match
-        is not sufficient to mark a message safe.
-        """
         text_lower = text.lower()
         legitimacy_score = 0.0
         reasons = []
@@ -385,10 +386,31 @@ class ProductionPhishingDetector:
                     reasons.append(f"Suspicious domain extension ({tld})")
                     break
 
+            # ── REGISTRABLE DOMAIN EXTRACTION ────────────────────────────
+            # For accounts.google.com.security-alert.net, the registrable
+            # domain is security-alert.net. We check BOTH the full domain
+            # AND the registrable domain for brand impersonation.
+            domain_parts = domain.split('.')
+            registrable_domain = '.'.join(domain_parts[-2:]) if len(domain_parts) >= 2 else domain
+
             is_typosquat, brand, similarity = self._fuzzy_brand_match(domain)
             if is_typosquat:
                 score += 0.65
                 reasons.append(f"Potential {brand.upper()} impersonation (typosquat/homoglyph)")
+
+            # Check for brand used as subdomain of non-brand domain
+            if not is_typosquat and registrable_domain != domain:
+                for brand_name in self.major_brands:
+                    if brand_name in domain and not domain.endswith(f"{brand_name}.com") \
+                            and not domain.endswith(f"{brand_name}.ng") \
+                            and not domain.endswith(f"{brand_name}.co.ke") \
+                            and not domain.endswith(f"{brand_name}.com.ng"):
+                        score += 0.75
+                        reasons.append(
+                            f"{brand_name.upper()} used as subdomain to deceive "
+                            f"(real domain: {registrable_domain})"
+                        )
+                        break
 
             subdomain_count = domain.count('.') - 1
             if subdomain_count > 3:
@@ -450,7 +472,7 @@ class ProductionPhishingDetector:
             proba = self.model.predict_proba(combined)[0]
             return float(proba[1]) if len(proba) > 1 else float(proba[0])
         except Exception as e:
-            print(f"ML prediction error: {e}")
+            print(f"ML prediction error: {e}", flush=True)
             return None
 
     def _combine_scores(self, heuristic_result, ml_score, text, nlp_result=None):
@@ -529,7 +551,9 @@ class ProductionPhishingDetector:
         return bool(re.match(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$', domain))
 
 
+print("=== PHISHING DETECTOR LOADING ===", flush=True)
 detector = ProductionPhishingDetector()
+print(f"=== DETECTOR READY | ml_available={detector.ml_available} ===", flush=True)
 
 
 def detect_phishing(text, use_content_analysis=False, safe_analyzer=None):
